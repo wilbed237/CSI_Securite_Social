@@ -2,13 +2,19 @@
 FROM maven:3.9.9-eclipse-temurin-17 AS build
 WORKDIR /workspace
 
-# Copie d'abord les POM pour mieux reutiliser le cache des dependances Maven.
+# Maven lit tous les modules declares par le parent, meme lorsque -pl cible un seul service.
+# On copie donc tous les POM afin que le reactor soit valide, tout en gardant le cache efficace.
 COPY pom.xml ./pom.xml
 COPY common/pom.xml ./common/pom.xml
+COPY discovery-service/pom.xml ./discovery-service/pom.xml
+COPY api-gateway/pom.xml ./api-gateway/pom.xml
+COPY auth-service/pom.xml ./auth-service/pom.xml
 COPY profile-service/pom.xml ./profile-service/pom.xml
+COPY medical-service/pom.xml ./medical-service/pom.xml
+COPY reimbursement-service/pom.xml ./reimbursement-service/pom.xml
 RUN mvn -pl profile-service -am dependency:go-offline -DskipTests
 
-# Copie le code source puis genere le JAR executable du service cible.
+# Seuls le module common et le service cible sont necessaires pour produire ce JAR.
 COPY common ./common
 COPY profile-service ./profile-service
 RUN mvn -pl profile-service -am package -DskipTests
