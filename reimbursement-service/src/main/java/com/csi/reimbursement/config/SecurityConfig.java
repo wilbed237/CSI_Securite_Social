@@ -10,6 +10,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * Configure la securite stateless du service de remboursement.
+ */
 @Configuration
 @EnableMethodSecurity
 @RequiredArgsConstructor

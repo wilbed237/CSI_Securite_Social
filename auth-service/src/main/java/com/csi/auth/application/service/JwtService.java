@@ -12,6 +12,9 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Map;
 
+/**
+ * Service technique responsable de la construction des access tokens JWT signes.
+ */
 @Service
 public class JwtService {
     private final SecretKey key;

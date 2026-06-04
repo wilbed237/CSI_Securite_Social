@@ -6,6 +6,9 @@ import lombok.*;
 import java.time.LocalDate;
 import java.util.UUID;
 
+/**
+ * Feuille de maladie documentant une consultation et declenchant le remboursement.
+ */
 @Getter
 @Setter
 @Builder

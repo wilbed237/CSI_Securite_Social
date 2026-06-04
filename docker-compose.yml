@@ -1,4 +1,5 @@
 services:
+  # Registre de decouverte utilise par la gateway et les microservices.
   discovery-service:
     build: ./discovery-service
     ports:
@@ -6,6 +7,7 @@ services:
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka/
 
+  # Base separee du service d authentification.
   auth-db:
     image: postgres:16-alpine
     environment:
@@ -17,6 +19,7 @@ services:
     volumes:
       - auth-db-data:/var/lib/postgresql/data
 
+  # Base separee du service des profils assures/medecins.
   profile-db:
     image: postgres:16-alpine
     environment:
@@ -28,6 +31,7 @@ services:
     volumes:
       - profile-db-data:/var/lib/postgresql/data
 
+  # Base separee du service medical.
   medical-db:
     image: postgres:16-alpine
     environment:
@@ -39,6 +43,7 @@ services:
     volumes:
       - medical-db-data:/var/lib/postgresql/data
 
+  # Base separee du service de remboursement.
   reimbursement-db:
     image: postgres:16-alpine
     environment:
@@ -50,6 +55,7 @@ services:
     volumes:
       - reimbursement-db-data:/var/lib/postgresql/data
 
+  # Service qui gere login, JWT, refresh tokens et comptes applicatifs.
   auth-service:
     build: ./auth-service
     depends_on:
@@ -64,6 +70,7 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka/
       JWT_SECRET: change-me-change-me-change-me-change-me-256-bit-secret
 
+  # Service qui gere assures, medecins et medecin traitant.
   profile-service:
     build: ./profile-service
     depends_on:
@@ -78,6 +85,7 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka/
       JWT_SECRET: change-me-change-me-change-me-change-me-256-bit-secret
 
+  # Service qui gere consultations, prescriptions et feuilles de maladie.
   medical-service:
     build: ./medical-service
     depends_on:
@@ -94,6 +102,7 @@ services:
       PROFILE_SERVICE_URL: http://profile-service:8082
       JWT_SECRET: change-me-change-me-change-me-change-me-256-bit-secret
 
+  # Service qui calcule et execute les remboursements.
   reimbursement-service:
     build: ./reimbursement-service
     depends_on:
@@ -110,6 +119,7 @@ services:
       MEDICAL_SERVICE_URL: http://medical-service:8083
       JWT_SECRET: change-me-change-me-change-me-change-me-256-bit-secret
 
+  # Point d entree unique expose a l application mobile.
   api-gateway:
     build: ./api-gateway
     depends_on:

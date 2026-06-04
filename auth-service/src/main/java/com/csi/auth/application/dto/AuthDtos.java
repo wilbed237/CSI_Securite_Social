@@ -9,6 +9,9 @@ import jakarta.validation.constraints.Size;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * Regroupe les DTO d entree et de sortie du service d authentification.
+ */
 public final class AuthDtos {
     private AuthDtos() {}
 

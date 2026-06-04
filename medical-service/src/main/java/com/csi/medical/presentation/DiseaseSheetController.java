@@ -11,6 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * API REST pour creer et consulter les feuilles de maladie servant au remboursement.
+ */
 @RestController
 @RequestMapping("/api/v1/disease-sheets")
 @RequiredArgsConstructor

@@ -5,6 +5,9 @@ import lombok.*;
 
 import java.util.UUID;
 
+/**
+ * Medicament et posologie rattaches a une prescription medicamenteuse.
+ */
 @Getter
 @Setter
 @Builder

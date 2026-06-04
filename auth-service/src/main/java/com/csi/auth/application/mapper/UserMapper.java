@@ -5,6 +5,9 @@ import com.csi.auth.domain.model.UserAccount;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
+/**
+ * Convertit les entites utilisateurs en DTO exposes par l API.
+ */
 public interface UserMapper {
     UserResponse toResponse(UserAccount userAccount);
 }

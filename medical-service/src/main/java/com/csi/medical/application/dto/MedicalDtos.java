@@ -12,6 +12,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * DTO d entree et de sortie pour consultations, prescriptions et feuilles de maladie.
+ */
 public final class MedicalDtos {
     private MedicalDtos() {}
 

@@ -12,6 +12,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+/**
+ * Client REST vers medical-service pour recuperer la feuille de maladie a rembourser.
+ */
 @Component
 @RequiredArgsConstructor
 public class MedicalClient {

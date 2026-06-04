@@ -8,6 +8,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * Compte utilisateur authentifiable par email, telephone ou nom d utilisateur.
+ */
 @Getter
 @Setter
 @Builder

@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Entite JPA commune aux prescriptions medicamenteuses et orientations vers specialiste.
+ */
 @Getter
 @Setter
 @Builder

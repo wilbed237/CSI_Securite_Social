@@ -11,6 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * API REST pour creer les prescriptions de medicaments et les orientations specialistes.
+ */
 @RestController
 @RequestMapping("/api/v1/prescriptions")
 @RequiredArgsConstructor

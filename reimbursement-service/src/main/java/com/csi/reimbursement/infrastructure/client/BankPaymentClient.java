@@ -5,6 +5,9 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
+/**
+ * Adaptateur simulant l acteur Banque pour les virements bancaires.
+ */
 @Slf4j
 @Component
 public class BankPaymentClient {

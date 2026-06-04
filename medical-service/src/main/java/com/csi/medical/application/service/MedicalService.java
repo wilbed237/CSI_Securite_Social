@@ -15,6 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.UUID;
 
+/**
+ * Orchestre les actes medicaux et garantit que le patient est assure avant toute operation.
+ */
 @Service
 @RequiredArgsConstructor
 public class MedicalService {
@@ -24,6 +27,9 @@ public class MedicalService {
     private final MedicalMapper mapper;
     private final ProfileClient profileClient;
 
+    /**
+     * Cree une consultation uniquement si la periode est valide et le patient assure actif.
+     */
     @Transactional
     public ConsultationResponse createConsultation(CreateConsultationRequest request) {
         if (!request.endedAt().isAfter(request.startedAt())) {
@@ -41,6 +47,9 @@ public class MedicalService {
         return mapper.toResponse(consultations.save(consultation));
     }
 
+    /**
+     * Enregistre une prescription de medicaments rattachee a une consultation existante.
+     */
     @Transactional
     public PrescriptionResponse prescribeMedication(CreateMedicationPrescriptionRequest request) {
         Consultation consultation = loadConsultation(request.consultationId());
@@ -58,6 +67,9 @@ public class MedicalService {
         return mapper.toResponse(prescriptions.save(prescription));
     }
 
+    /**
+     * Cree une orientation vers specialiste, reservee aux consultations de generaliste.
+     */
     @Transactional
     public PrescriptionResponse prescribeSpecialistConsultation(CreateSpecialistReferralRequest request) {
         Consultation consultation = loadConsultation(request.consultationId());
@@ -75,6 +87,9 @@ public class MedicalService {
         return mapper.toResponse(prescriptions.save(prescription));
     }
 
+    /**
+     * Genere la feuille de maladie qui servira de reference au remboursement.
+     */
     @Transactional
     public DiseaseSheetResponse createDiseaseSheet(CreateDiseaseSheetRequest request) {
         Consultation consultation = loadConsultation(request.consultationId());

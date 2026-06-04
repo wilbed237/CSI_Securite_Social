@@ -10,6 +10,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
+/**
+ * DTO utilises par les endpoints de remboursement.
+ */
 public final class ReimbursementDtos {
     private ReimbursementDtos() {}
 

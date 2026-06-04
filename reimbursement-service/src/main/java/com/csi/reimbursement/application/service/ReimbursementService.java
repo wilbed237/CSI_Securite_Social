@@ -15,6 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+/**
+ * Cas d utilisation de remboursement : controle la feuille, calcule le montant et execute le paiement.
+ */
 @Service
 @RequiredArgsConstructor
 public class ReimbursementService {
@@ -24,6 +27,9 @@ public class ReimbursementService {
     private final ReimbursementCalculator calculator;
     private final ReimbursementMapper mapper;
 
+    /**
+     * Execute un remboursement unique pour une feuille de maladie completee.
+     */
     @Transactional
     public ReimbursementResponse reimburse(CreateReimbursementRequest request) {
         if (reimbursements.existsBySheetNumberIgnoreCase(request.sheetNumber())) {

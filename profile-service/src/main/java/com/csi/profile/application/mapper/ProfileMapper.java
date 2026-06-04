@@ -7,6 +7,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
+/**
+ * Mapper MapStruct entre entites JPA du profil et DTO REST.
+ */
 public interface ProfileMapper {
     DoctorResponse toDoctorResponse(Doctor doctor);
     InsuredResponse toInsuredResponse(InsuredPerson insuredPerson);

@@ -11,6 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Set;
 
+/**
+ * Initialise des comptes de demonstration pour tester rapidement les roles agent et medecin.
+ */
 @Configuration
 @RequiredArgsConstructor
 public class DataSeeder {

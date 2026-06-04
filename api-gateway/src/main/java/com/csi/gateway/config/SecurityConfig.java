@@ -13,6 +13,9 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+/**
+ * Configuration minimale de securite et CORS au niveau gateway pour accepter les appels de l application mobile.
+ */
 @Configuration
 public class SecurityConfig {
     @Bean

@@ -14,6 +14,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Contient les cas d utilisation de gestion des profils et applique les regles d integrite metier.
+ */
 @Service
 @RequiredArgsConstructor
 public class ProfileService {
@@ -21,6 +24,9 @@ public class ProfileService {
     private final DoctorRepository doctorRepository;
     private final ProfileMapper mapper;
 
+    /**
+     * Inscrit un nouvel assure apres controle d unicite du numero d assurance.
+     */
     @Transactional
     public InsuredResponse registerInsured(CreateInsuredRequest request) {
         if (insuredRepository.existsByInsuranceNumberIgnoreCase(request.insuranceNumber())) {
@@ -29,6 +35,9 @@ public class ProfileService {
         return mapper.toInsuredResponse(insuredRepository.save(mapper.toEntity(request)));
     }
 
+    /**
+     * Enregistre un medecin en respectant l exclusivite generaliste/specialiste.
+     */
     @Transactional
     public DoctorResponse registerDoctor(CreateDoctorRequest request) {
         if (doctorRepository.existsByMatriculeIgnoreCase(request.matricule())) {
@@ -43,6 +52,9 @@ public class ProfileService {
         return mapper.toDoctorResponse(doctorRepository.save(mapper.toEntity(request)));
     }
 
+    /**
+     * Associe un medecin traitant generaliste a un assure existant.
+     */
     @Transactional
     public InsuredResponse assignTreatingDoctor(String insuranceNumber, AssignTreatingDoctorRequest request) {
         var insured = insuredRepository.findByInsuranceNumberIgnoreCase(insuranceNumber)

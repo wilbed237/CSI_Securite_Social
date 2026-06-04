@@ -9,6 +9,9 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.reactive.function.client.WebClient;
 
+/**
+ * Client REST vers profile-service pour verifier qu un patient est un assure actif.
+ */
 @Component
 @RequiredArgsConstructor
 public class ProfileClient {

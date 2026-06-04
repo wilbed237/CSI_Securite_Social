@@ -10,6 +10,9 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.UUID;
 
+/**
+ * DTO utilises par les API de gestion des assures et medecins.
+ */
 public final class ProfileDtos {
     private ProfileDtos() {}
 

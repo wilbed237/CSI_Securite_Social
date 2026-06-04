@@ -16,6 +16,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+/**
+ * Configure BCrypt, CORS et les regles d acces publiques du service d authentification.
+ */
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {

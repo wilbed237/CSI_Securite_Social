@@ -6,6 +6,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
+/**
+ * Mapper MapStruct du domaine medical vers les DTO REST.
+ */
 public interface MedicalMapper {
     ConsultationResponse toResponse(Consultation consultation);
     MedicationResponse toResponse(Medication medication);

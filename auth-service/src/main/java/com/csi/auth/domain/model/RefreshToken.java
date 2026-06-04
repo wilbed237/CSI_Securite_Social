@@ -6,6 +6,9 @@ import lombok.*;
 import java.time.Instant;
 import java.util.UUID;
 
+/**
+ * Jeton long terme permettant de renouveler un access token sans ressaisir le mot de passe.
+ */
 @Getter
 @Setter
 @Builder

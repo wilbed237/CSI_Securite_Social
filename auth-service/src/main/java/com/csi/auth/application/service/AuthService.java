@@ -17,6 +17,9 @@ import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Base64;
 
+/**
+ * Orchestre les cas d utilisation d authentification, de renouvellement et d inscription utilisateur.
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -30,6 +33,9 @@ public class AuthService {
     @Value("${security.jwt.refresh-token-expiration-seconds:604800}")
     private long refreshExpirationSeconds;
 
+    /**
+     * Verifie les identifiants puis emet un access token et un refresh token.
+     */
     @Transactional
     public AuthResponse login(LoginRequest request) {
         UserAccount user = users.findByEmailIgnoreCaseOrPhoneNumberOrUsernameIgnoreCase(request.identifier(), request.identifier(), request.identifier())
@@ -41,6 +47,9 @@ public class AuthService {
         return issueTokens(user);
     }
 
+    /**
+     * Valide un refresh token actif et genere une nouvelle paire de tokens.
+     */
     @Transactional
     public AuthResponse refresh(RefreshRequest request) {
         RefreshToken token = refreshTokens.findByToken(request.refreshToken())
@@ -49,6 +58,9 @@ public class AuthService {
         return issueTokens(token.getUser());
     }
 
+    /**
+     * Cree un compte applicatif avec mot de passe chiffre et roles explicites.
+     */
     @Transactional
     public UserResponse register(RegisterUserRequest request) {
         if (users.existsByEmailIgnoreCase(request.email()) || users.existsByUsernameIgnoreCase(request.username())) {

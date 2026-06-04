@@ -5,6 +5,9 @@ import lombok.*;
 
 import java.util.UUID;
 
+/**
+ * Entite JPA representant un medecin generaliste ou specialiste du systeme CSI.
+ */
 @Getter
 @Setter
 @Builder

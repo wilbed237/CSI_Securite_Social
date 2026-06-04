@@ -7,6 +7,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * Entite JPA qui trace une consultation entre un assure et un medecin.
+ */
 @Getter
 @Setter
 @Builder

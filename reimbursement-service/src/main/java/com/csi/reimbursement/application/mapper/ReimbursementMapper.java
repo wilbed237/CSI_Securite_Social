@@ -5,6 +5,9 @@ import com.csi.reimbursement.domain.model.Reimbursement;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
+/**
+ * Mapper MapStruct entre l entite remboursement et la reponse REST.
+ */
 public interface ReimbursementMapper {
     ReimbursementResponse toResponse(Reimbursement reimbursement);
 }

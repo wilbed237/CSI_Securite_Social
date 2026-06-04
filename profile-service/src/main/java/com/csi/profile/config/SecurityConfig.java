@@ -10,6 +10,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * Active la securite stateless par JWT et la protection des endpoints du profil.
+ */
 @Configuration
 @EnableMethodSecurity
 @RequiredArgsConstructor

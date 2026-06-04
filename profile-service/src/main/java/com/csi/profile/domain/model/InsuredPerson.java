@@ -6,6 +6,9 @@ import lombok.*;
 import java.time.LocalDate;
 import java.util.UUID;
 
+/**
+ * Entite JPA representant un assure social et son eventuel medecin traitant.
+ */
 @Getter
 @Setter
 @Builder

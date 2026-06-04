@@ -20,6 +20,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Filtre JWT qui authentifie l agent avant les operations de remboursement.
+ */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final SecretKey key;

@@ -20,6 +20,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Filtre qui valide le JWT entrant et place les roles dans le contexte Spring Security.
+ */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final SecretKey key;

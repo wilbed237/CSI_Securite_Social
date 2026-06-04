@@ -9,6 +9,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Repository Spring Data pour les medecins et leurs recherches metier.
+ */
 public interface DoctorRepository extends JpaRepository<Doctor, UUID> {
     Optional<Doctor> findByMatriculeIgnoreCase(String matricule);
     boolean existsByMatriculeIgnoreCase(String matricule);

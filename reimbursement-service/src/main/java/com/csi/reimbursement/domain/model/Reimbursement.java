@@ -7,6 +7,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
+/**
+ * Entite JPA representant le paiement effectue pour une feuille de maladie.
+ */
 @Getter
 @Setter
 @Builder
