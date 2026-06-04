@@ -21,6 +21,8 @@ RUN mvn -pl api-gateway -am package -DskipTests
 
 FROM eclipse-temurin:17-jre
 WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
 COPY --from=build /workspace/api-gateway/target/api-gateway-0.1.0-SNAPSHOT.jar app.jar
 EXPOSE 8080
+HEALTHCHECK --interval=10s --timeout=3s --start-period=35s --retries=12 CMD curl -fsS http://localhost:8080/actuator/health || exit 1
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]

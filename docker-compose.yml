@@ -20,6 +20,11 @@ services:
       - "5433:5432"
     volumes:
       - auth-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U csi_auth -d csi_auth"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
 
   # Base separee du service des profils assures/medecins.
   profile-db:
@@ -32,6 +37,11 @@ services:
       - "5434:5432"
     volumes:
       - profile-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U csi_profile -d csi_profile"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
 
   # Base separee du service medical.
   medical-db:
@@ -44,6 +54,11 @@ services:
       - "5435:5432"
     volumes:
       - medical-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U csi_medical -d csi_medical"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
 
   # Base separee du service de remboursement.
   reimbursement-db:
@@ -56,6 +71,11 @@ services:
       - "5436:5432"
     volumes:
       - reimbursement-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U csi_reimbursement -d csi_reimbursement"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
 
   # Service qui gere login, JWT, refresh tokens et comptes applicatifs.
   auth-service:
@@ -63,8 +83,10 @@ services:
       context: .
       dockerfile: auth-service/Dockerfile
     depends_on:
-      - discovery-service
-      - auth-db
+      discovery-service:
+        condition: service_healthy
+      auth-db:
+        condition: service_healthy
     ports:
       - "8081:8081"
     environment:
@@ -80,8 +102,10 @@ services:
       context: .
       dockerfile: profile-service/Dockerfile
     depends_on:
-      - discovery-service
-      - profile-db
+      discovery-service:
+        condition: service_healthy
+      profile-db:
+        condition: service_healthy
     ports:
       - "8082:8082"
     environment:
@@ -97,9 +121,12 @@ services:
       context: .
       dockerfile: medical-service/Dockerfile
     depends_on:
-      - discovery-service
-      - medical-db
-      - profile-service
+      discovery-service:
+        condition: service_healthy
+      medical-db:
+        condition: service_healthy
+      profile-service:
+        condition: service_healthy
     ports:
       - "8083:8083"
     environment:
@@ -116,9 +143,12 @@ services:
       context: .
       dockerfile: reimbursement-service/Dockerfile
     depends_on:
-      - discovery-service
-      - reimbursement-db
-      - medical-service
+      discovery-service:
+        condition: service_healthy
+      reimbursement-db:
+        condition: service_healthy
+      medical-service:
+        condition: service_healthy
     ports:
       - "8084:8084"
     environment:
@@ -135,11 +165,16 @@ services:
       context: .
       dockerfile: api-gateway/Dockerfile
     depends_on:
-      - discovery-service
-      - auth-service
-      - profile-service
-      - medical-service
-      - reimbursement-service
+      discovery-service:
+        condition: service_healthy
+      auth-service:
+        condition: service_healthy
+      profile-service:
+        condition: service_healthy
+      medical-service:
+        condition: service_healthy
+      reimbursement-service:
+        condition: service_healthy
     ports:
       - "8080:8080"
     environment:
