@@ -1,0 +1,130 @@
+services:
+  discovery-service:
+    build: ./discovery-service
+    ports:
+      - "8761:8761"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka/
+
+  auth-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: csi_auth
+      POSTGRES_USER: csi_auth
+      POSTGRES_PASSWORD: csi_auth
+    ports:
+      - "5433:5432"
+    volumes:
+      - auth-db-data:/var/lib/postgresql/data
+
+  profile-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: csi_profile
+      POSTGRES_USER: csi_profile
+      POSTGRES_PASSWORD: csi_profile
+    ports:
+      - "5434:5432"
+    volumes:
+      - profile-db-data:/var/lib/postgresql/data
+
+  medical-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: csi_medical
+      POSTGRES_USER: csi_medical
+      POSTGRES_PASSWORD: csi_medical
+    ports:
+      - "5435:5432"
+    volumes:
+      - medical-db-data:/var/lib/postgresql/data
+
+  reimbursement-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: csi_reimbursement
+      POSTGRES_USER: csi_reimbursement
+      POSTGRES_PASSWORD: csi_reimbursement
+    ports:
+      - "5436:5432"
+    volumes:
+      - reimbursement-db-data:/var/lib/postgresql/data
+
+  auth-service:
+    build: ./auth-service
+    depends_on:
+      - discovery-service
+      - auth-db
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://auth-db:5432/csi_auth
+      SPRING_DATASOURCE_USERNAME: csi_auth
+      SPRING_DATASOURCE_PASSWORD: csi_auth
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka/
+      JWT_SECRET: change-me-change-me-change-me-change-me-256-bit-secret
+
+  profile-service:
+    build: ./profile-service
+    depends_on:
+      - discovery-service
+      - profile-db
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://profile-db:5432/csi_profile
+      SPRING_DATASOURCE_USERNAME: csi_profile
+      SPRING_DATASOURCE_PASSWORD: csi_profile
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka/
+      JWT_SECRET: change-me-change-me-change-me-change-me-256-bit-secret
+
+  medical-service:
+    build: ./medical-service
+    depends_on:
+      - discovery-service
+      - medical-db
+      - profile-service
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://medical-db:5432/csi_medical
+      SPRING_DATASOURCE_USERNAME: csi_medical
+      SPRING_DATASOURCE_PASSWORD: csi_medical
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka/
+      PROFILE_SERVICE_URL: http://profile-service:8082
+      JWT_SECRET: change-me-change-me-change-me-change-me-256-bit-secret
+
+  reimbursement-service:
+    build: ./reimbursement-service
+    depends_on:
+      - discovery-service
+      - reimbursement-db
+      - medical-service
+    ports:
+      - "8084:8084"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://reimbursement-db:5432/csi_reimbursement
+      SPRING_DATASOURCE_USERNAME: csi_reimbursement
+      SPRING_DATASOURCE_PASSWORD: csi_reimbursement
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka/
+      MEDICAL_SERVICE_URL: http://medical-service:8083
+      JWT_SECRET: change-me-change-me-change-me-change-me-256-bit-secret
+
+  api-gateway:
+    build: ./api-gateway
+    depends_on:
+      - discovery-service
+      - auth-service
+      - profile-service
+      - medical-service
+      - reimbursement-service
+    ports:
+      - "8080:8080"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka/
+
+volumes:
+  auth-db-data:
+  profile-db-data:
+  medical-db-data:
+  reimbursement-db-data:

@@ -1,0 +1,32 @@
+server:
+  port: 8084
+spring:
+  application:
+    name: reimbursement-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5436/csi_reimbursement}
+    username: ${SPRING_DATASOURCE_USERNAME:csi_reimbursement}
+    password: ${SPRING_DATASOURCE_PASSWORD:csi_reimbursement}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+security:
+  jwt:
+    secret: ${JWT_SECRET:change-me-change-me-change-me-change-me-256-bit-secret}
+clients:
+  medical-service-url: ${MEDICAL_SERVICE_URL:http://localhost:8083}
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

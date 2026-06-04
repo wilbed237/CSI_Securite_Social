@@ -1,0 +1,16 @@
+# Build outputs
+target/
+.mvn/apache-maven-*/
+.mvn/*.tar.gz
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Runtime
+*.log
+.env
+
+# Extracted analysis scratch file
+csi_extracted.txt

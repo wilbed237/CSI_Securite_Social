@@ -1,0 +1,32 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: auth-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/csi_auth}
+    username: ${SPRING_DATASOURCE_USERNAME:csi_auth}
+    password: ${SPRING_DATASOURCE_PASSWORD:csi_auth}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+security:
+  jwt:
+    secret: ${JWT_SECRET:change-me-change-me-change-me-change-me-256-bit-secret}
+    access-token-expiration-seconds: ${JWT_ACCESS_EXPIRATION:3600}
+    refresh-token-expiration-seconds: ${JWT_REFRESH_EXPIRATION:604800}
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
