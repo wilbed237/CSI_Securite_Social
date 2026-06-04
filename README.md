@@ -1,6 +1,6 @@
 # CSI Backend - Microservices Spring Boot
 
-Backend Java Spring Boot 3 / Java 21 pour le cahier de charges `csi.pdf`.
+Backend Java Spring Boot 3 / Java 17 pour le cahier de charges `csi.pdf`.
 
 ## 1. Analyse technique de `csi.pdf`
 
