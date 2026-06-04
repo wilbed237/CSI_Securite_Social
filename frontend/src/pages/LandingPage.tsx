@@ -15,7 +15,20 @@ export function LandingPage() {
         <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <div>
             <span className="inline-flex rounded-full bg-white/10 px-4 py-2 text-sm font-semibold ring-1 ring-white/20">CSI Assurance Santé</span>
-            <h1 className="mt-6 text-4xl font-black leading-tight sm:text-6xl">Une plateforme moderne pour la sécurité sociale médicale.</h1>
+            <h1 className="animated-wave-title mt-6 text-5xl font-black leading-tight tracking-tight sm:text-7xl xl:text-8xl" aria-label="Une plateforme moderne pour la sécurité sociale médicale.">
+              {'Une plateforme moderne'.split('').map((letter, index) => (
+                <span key={`${letter}-${index}`} style={{ animationDelay: `${index * 0.045}s` }}>
+                  {letter === ' ' ? '\u00A0' : letter}
+                </span>
+              ))}
+              <span className="block pt-2 text-secondary-100">
+                {'pour la sécurité sociale médicale.'.split('').map((letter, index) => (
+                  <span key={`${letter}-${index}`} style={{ animationDelay: `${(index + 24) * 0.045}s` }}>
+                    {letter === ' ' ? '\u00A0' : letter}
+                  </span>
+                ))}
+              </span>
+            </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-blue-50">Gérez les assurés, médecins, prescriptions, feuilles de maladie et remboursements depuis une interface claire, sécurisée et responsive.</p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link to="/login"><Button icon={<ArrowRight className="h-4 w-4" />}>Se connecter</Button></Link>
