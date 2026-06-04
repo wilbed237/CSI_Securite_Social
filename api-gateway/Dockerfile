@@ -1,6 +1,20 @@
+# Compile le microservice dans Docker pour ne pas dependre du JDK installe sur la machine hote.
+FROM maven:3.9.9-eclipse-temurin-17 AS build
+WORKDIR /workspace
+
+# Copie d'abord les POM pour mieux reutiliser le cache des dependances Maven.
+COPY pom.xml ./pom.xml
+COPY common/pom.xml ./common/pom.xml
+COPY api-gateway/pom.xml ./api-gateway/pom.xml
+RUN mvn -pl api-gateway -am dependency:go-offline -DskipTests
+
+# Copie le code source puis genere le JAR executable du service cible.
+COPY common ./common
+COPY api-gateway ./api-gateway
+RUN mvn -pl api-gateway -am package -DskipTests
+
 FROM eclipse-temurin:17-jre
 WORKDIR /app
-ARG JAR_FILE=target/api-gateway-0.1.0-SNAPSHOT.jar
-COPY ${JAR_FILE} app.jar
+COPY --from=build /workspace/api-gateway/target/api-gateway-0.1.0-SNAPSHOT.jar app.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]

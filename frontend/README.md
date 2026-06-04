@@ -83,9 +83,10 @@ Application disponible par défaut sur <http://localhost:5173>.
 Depuis la racine du dépôt :
 
 ```bash
-./mvnw clean package -DskipTests
 docker compose up --build
 ```
+
+Les images Docker compilent les services avec Maven + JDK 17. Si tu veux compiler localement avant Docker, installe un JDK 17 puis lance `./mvnw clean package -DskipTests`.
 
 Services utiles :
 

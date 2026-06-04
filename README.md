@@ -167,20 +167,23 @@ Comptes de test crees au demarrage par `auth-service` :
 
 ## 7. Lancement
 
-### Compiler
+### Option recommandee : lancer avec Docker sans Java local
+
+Les Dockerfiles compilent maintenant chaque microservice dans une image `maven:3.9.9-eclipse-temurin-17`. Tu n'as donc pas besoin d'avoir Java 17 installe sur ta machine pour lancer le backend avec Docker.
 
 ```bash
-./mvnw clean package
+docker compose up --build
 ```
 
-Le wrapper telecharge Maven 3.9.9 dans `.mvn/` si Maven n'est pas installe globalement.
+### Option developpeur : compiler localement
 
-### Lancer toute l'architecture
+Cette option exige un JDK 17 minimum. Verifie ta version avec `java -version` et `javac -version`. Si ton `javac` est inferieur a 17, utilise l'option Docker ci-dessus ou installe un JDK 17.
 
 ```bash
 ./mvnw clean package -DskipTests
-docker compose up --build
 ```
+
+Le wrapper telecharge Maven 3.9.9 dans `.mvn/` si Maven n'est pas installe globalement.
 
 Services :
 - Gateway : <http://localhost:8080>
@@ -223,3 +226,21 @@ Tests inclus :
 - Le document ne mentionne pas de notifications ni pieces jointes ; aucun microservice notification/document n'a ete ajoute pour eviter une fonctionnalite artificielle.
 - La banque est simulee par un client applicatif (`BankPaymentClient`) qui journalise le virement sans integration externe reelle.
 - Les communications interservices REST propagent le token utilisateur courant afin de conserver les controles de role.
+
+### Erreur locale `release version 17 not supported`
+
+Cette erreur signifie que le JDK local est inferieur a Java 17. Spring Boot 3 exige Java 17 minimum. Solutions :
+
+1. lancer directement `docker compose up --build`, qui compile dans Docker avec Java 17 ;
+2. ou installer un JDK 17 et configurer `JAVA_HOME`.
+
+Sur Debian/Kali/Ubuntu :
+
+```bash
+sudo apt update
+sudo apt install openjdk-17-jdk
+sudo update-alternatives --config java
+sudo update-alternatives --config javac
+java -version
+javac -version
+```

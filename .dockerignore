@@ -1,0 +1,9 @@
+# Git et sorties locales inutiles dans le contexte Docker
+.git
+**/target
+**/node_modules
+**/dist
+.mvn/apache-maven-*
+.mvn/*.tar.gz
+*.log
+.env

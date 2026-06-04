@@ -1,7 +1,9 @@
 services:
   # Registre de decouverte utilise par la gateway et les microservices.
   discovery-service:
-    build: ./discovery-service
+    build:
+      context: .
+      dockerfile: discovery-service/Dockerfile
     ports:
       - "8761:8761"
     environment:
@@ -57,7 +59,9 @@ services:
 
   # Service qui gere login, JWT, refresh tokens et comptes applicatifs.
   auth-service:
-    build: ./auth-service
+    build:
+      context: .
+      dockerfile: auth-service/Dockerfile
     depends_on:
       - discovery-service
       - auth-db
@@ -72,7 +76,9 @@ services:
 
   # Service qui gere assures, medecins et medecin traitant.
   profile-service:
-    build: ./profile-service
+    build:
+      context: .
+      dockerfile: profile-service/Dockerfile
     depends_on:
       - discovery-service
       - profile-db
@@ -87,7 +93,9 @@ services:
 
   # Service qui gere consultations, prescriptions et feuilles de maladie.
   medical-service:
-    build: ./medical-service
+    build:
+      context: .
+      dockerfile: medical-service/Dockerfile
     depends_on:
       - discovery-service
       - medical-db
@@ -104,7 +112,9 @@ services:
 
   # Service qui calcule et execute les remboursements.
   reimbursement-service:
-    build: ./reimbursement-service
+    build:
+      context: .
+      dockerfile: reimbursement-service/Dockerfile
     depends_on:
       - discovery-service
       - reimbursement-db
@@ -121,7 +131,9 @@ services:
 
   # Point d entree unique expose a l application mobile.
   api-gateway:
-    build: ./api-gateway
+    build:
+      context: .
+      dockerfile: api-gateway/Dockerfile
     depends_on:
       - discovery-service
       - auth-service
