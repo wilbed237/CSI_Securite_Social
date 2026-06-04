@@ -1,0 +1,63 @@
+import { useQuery } from '@tanstack/react-query';
+import { Stethoscope } from 'lucide-react';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import { useParams } from 'react-router-dom';
+import { profileApi } from '../../api/profileApi';
+import { extractApiError } from '../../api/httpClient';
+import { PageHeader } from '../../components/PageHeader';
+import { RoleGate } from '../../components/RoleGate';
+import { Badge } from '../../components/ui/Badge';
+import { Button } from '../../components/ui/Button';
+import { Card, CardHeader } from '../../components/ui/Card';
+import { ErrorMessage } from '../../components/ui/ErrorMessage';
+import { Input } from '../../components/ui/Input';
+import { Loader } from '../../components/ui/Loader';
+import { usePageTitle } from '../../hooks/usePageTitle';
+
+export function InsuredDetailPage() {
+  const { insuranceNumber = '' } = useParams();
+  usePageTitle(`Assuré ${insuranceNumber}`);
+  const [doctorMatricule, setDoctorMatricule] = useState('MED-GEN-001');
+  const query = useQuery({ queryKey: ['insured', insuranceNumber], queryFn: () => profileApi.getInsured(insuranceNumber) });
+
+  const assign = async () => {
+    try { await profileApi.assignTreatingDoctor(insuranceNumber, doctorMatricule); toast.success('Médecin traitant associé'); query.refetch(); }
+    catch (error) { toast.error(extractApiError(error)); }
+  };
+
+  if (query.isLoading) return <Loader />;
+  if (query.isError) return <ErrorMessage message={extractApiError(query.error)} />;
+  const insured = query.data!;
+  return (
+    <div>
+      <PageHeader title={`${insured.firstName} ${insured.lastName}`} description={`Dossier assuré ${insured.insuranceNumber}`} />
+      <div className="grid gap-6 xl:grid-cols-[1fr_0.9fr]">
+        <Card>
+          <CardHeader title="Informations administratives" />
+          <dl className="grid gap-4 sm:grid-cols-2">
+            <Info label="Statut" value={<Badge tone={insured.status === 'ACTIVE' ? 'success' : 'warning'}>{insured.status}</Badge>} />
+            <Info label="Naissance" value={insured.birthDate} />
+            <Info label="Adresse" value={insured.address} />
+            <Info label="Téléphone" value={insured.phoneNumber ?? '-'} />
+            <Info label="Email" value={insured.email ?? '-'} />
+          </dl>
+        </Card>
+        <Card>
+          <CardHeader title="Médecin traitant" description="Le cahier de charges impose un généraliste comme médecin de référence." />
+          {insured.treatingDoctor ? <div className="rounded-xl bg-secondary-50 p-4"><p className="font-bold text-slate-950">Dr {insured.treatingDoctor.firstName} {insured.treatingDoctor.lastName}</p><p className="text-sm text-slate-500">{insured.treatingDoctor.matricule} · {insured.treatingDoctor.type}</p></div> : <p className="text-sm text-slate-500">Aucun médecin traitant enregistré.</p>}
+          <RoleGate roles={['AGENT']}>
+            <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-end">
+              <Input label="Matricule généraliste" value={doctorMatricule} onChange={(e) => setDoctorMatricule(e.target.value)} />
+              <Button icon={<Stethoscope className="h-4 w-4" />} onClick={assign}>Associer</Button>
+            </div>
+          </RoleGate>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+function Info({ label, value }: { label: string; value: React.ReactNode }) {
+  return <div><dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">{label}</dt><dd className="mt-1 text-sm font-medium text-slate-800">{value}</dd></div>;
+}
