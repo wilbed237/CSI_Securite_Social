@@ -18,6 +18,8 @@ Interface React moderne pour le backend CSI Spring Boot microservices. Elle couv
 
 ## 2. Identité visuelle
 
+- Mode clair / sombre avec bouton de bascule et persistance locale.
+
 - Primaire : bleu santé professionnel `#0f4c81`
 - Secondaire : cyan doux `#e0f2fe`
 - Accent : vert action `#10b981`

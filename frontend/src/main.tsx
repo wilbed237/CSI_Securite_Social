@@ -5,6 +5,9 @@ import { RouterProvider } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { router } from './routes/AppRoutes';
 import './index.css';
+import { initializeTheme } from './store/themeStore';
+
+initializeTheme();
 
 const queryClient = new QueryClient({
   defaultOptions: {

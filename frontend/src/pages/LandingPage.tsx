@@ -1,6 +1,7 @@
 import { ArrowRight, ShieldCheck, Stethoscope, WalletCards } from 'lucide-react';
 import { Link, Navigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
+import { ThemeToggle } from '../components/ThemeToggle';
 import { useAuthStore } from '../store/authStore';
 import { usePageTitle } from '../hooks/usePageTitle';
 
@@ -10,7 +11,10 @@ export function LandingPage() {
   if (token) return <Navigate to="/app" replace />;
 
   return (
-    <main className="min-h-screen bg-slate-50">
+    <main className="relative min-h-screen bg-slate-50">
+      <div className="absolute right-4 top-4 z-10 sm:right-8 sm:top-8">
+        <ThemeToggle />
+      </div>
       <section className="gradient-health px-6 py-16 text-white sm:py-24">
         <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <div>

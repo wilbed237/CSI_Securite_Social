@@ -5,6 +5,7 @@ import { navigationItems } from '../routes/navigation';
 import { useAuthStore } from '../store/authStore';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
+import { ThemeToggle } from '../components/ThemeToggle';
 import { cn } from '../utils/cn';
 
 export function AppLayout() {
@@ -66,7 +67,10 @@ export function AppLayout() {
               <p className="text-sm text-slate-500">Application CSI</p>
               <h1 className="text-xl font-black text-slate-950">Espace sécurisé</h1>
             </div>
-            <Badge tone="success">JWT actif</Badge>
+            <div className="flex items-center gap-2">
+              <ThemeToggle className="border-slate-200 bg-white text-slate-700 hover:bg-slate-100" />
+              <Badge tone="success">JWT actif</Badge>
+            </div>
           </div>
         </header>
         <main className="p-4 lg:p-8">
