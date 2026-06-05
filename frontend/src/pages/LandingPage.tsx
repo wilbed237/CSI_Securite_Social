@@ -2,6 +2,7 @@ import { ArrowRight, ShieldCheck, Stethoscope, WalletCards } from 'lucide-react'
 import { Link, Navigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { ThemeToggle } from '../components/ThemeToggle';
+import { CareHealthLogo } from '../components/brand/CareHealthLogo';
 import { useAuthStore } from '../store/authStore';
 import { usePageTitle } from '../hooks/usePageTitle';
 
@@ -18,22 +19,22 @@ export function LandingPage() {
       <section className="gradient-health px-6 py-16 text-white sm:py-24">
         <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <div>
-            <span className="inline-flex rounded-full bg-white/10 px-4 py-2 text-sm font-semibold ring-1 ring-white/20">CSI Assurance Santé</span>
-            <h1 className="animated-wave-title mt-6 text-5xl font-black leading-tight tracking-tight sm:text-7xl xl:text-8xl" aria-label="Une plateforme moderne pour la sécurité sociale médicale.">
-              {'Une plateforme moderne'.split('').map((letter, index) => (
+            <div className="inline-flex rounded-3xl bg-white/10 px-4 py-3 ring-1 ring-white/20 backdrop-blur"><CareHealthLogo className="text-white" /></div>
+            <h1 className="animated-wave-title mt-6 text-5xl font-black leading-tight tracking-tight sm:text-7xl xl:text-8xl" aria-label="Un cockpit clinique pour vos parcours de soins.">
+              {'Un cockpit clinique'.split('').map((letter, index) => (
                 <span key={`${letter}-${index}`} style={{ animationDelay: `${index * 0.045}s` }}>
                   {letter === ' ' ? '\u00A0' : letter}
                 </span>
               ))}
               <span className="block pt-2 text-secondary-100">
-                {'pour la sécurité sociale médicale.'.split('').map((letter, index) => (
+                {'pour vos parcours de soins.'.split('').map((letter, index) => (
                   <span key={`${letter}-${index}`} style={{ animationDelay: `${(index + 24) * 0.045}s` }}>
                     {letter === ' ' ? '\u00A0' : letter}
                   </span>
                 ))}
               </span>
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-blue-50">Gérez les assurés, médecins, prescriptions, feuilles de maladie et remboursements depuis une interface claire, sécurisée et responsive.</p>
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-blue-50">Pilotez les dossiers patients, les praticiens, les ordonnances, les feuilles de soins et les prises en charge depuis une expérience médicale claire, sécurisée et responsive.</p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link to="/login"><Button icon={<ArrowRight className="h-4 w-4" />}>Se connecter</Button></Link>
               <Link to="/register"><Button variant="secondary">Créer un compte</Button></Link>
@@ -41,7 +42,7 @@ export function LandingPage() {
           </div>
           <div className="rounded-3xl bg-white/10 p-6 ring-1 ring-white/20 backdrop-blur">
             <div className="grid gap-4">
-              {[['Assurés actifs', 'Vérification rapide avant acte médical', ShieldCheck], ['Actes médicaux', 'Consultations, prescriptions et feuilles maladie', Stethoscope], ['Remboursements', 'Calcul automatique 100% / 80%', WalletCards]].map(([title, desc, Icon]) => (
+              {[['Patients suivis', 'Validation clinique avant tout acte de soin', ShieldCheck], ['Actes cliniques', 'Consultations, ordonnances et feuilles de soins', Stethoscope], ['Prise en charge', 'Calcul automatisé selon le parcours thérapeutique', WalletCards]].map(([title, desc, Icon]) => (
                 <div key={String(title)} className="rounded-2xl bg-white p-5 text-slate-900 shadow-lg">
                   <div className="flex gap-4"><span className="rounded-2xl bg-secondary-100 p-3 text-primary-700"><Icon className="h-6 w-6" /></span><div><h3 className="font-bold">{title as string}</h3><p className="mt-1 text-sm text-slate-500">{desc as string}</p></div></div>
                 </div>

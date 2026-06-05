@@ -17,12 +17,12 @@ import { usePageTitle } from '../../hooks/usePageTitle';
 
 export function InsuredDetailPage() {
   const { insuranceNumber = '' } = useParams();
-  usePageTitle(`Assuré ${insuranceNumber}`);
+  usePageTitle(`Patient couvert ${insuranceNumber}`);
   const [doctorMatricule, setDoctorMatricule] = useState('MED-GEN-001');
   const query = useQuery({ queryKey: ['insured', insuranceNumber], queryFn: () => profileApi.getInsured(insuranceNumber) });
 
   const assign = async () => {
-    try { await profileApi.assignTreatingDoctor(insuranceNumber, doctorMatricule); toast.success('Médecin traitant associé'); query.refetch(); }
+    try { await profileApi.assignTreatingDoctor(insuranceNumber, doctorMatricule); toast.success('Praticien référent associé'); query.refetch(); }
     catch (error) { toast.error(extractApiError(error)); }
   };
 
@@ -31,7 +31,7 @@ export function InsuredDetailPage() {
   const insured = query.data!;
   return (
     <div>
-      <PageHeader title={`${insured.firstName} ${insured.lastName}`} description={`Dossier assuré ${insured.insuranceNumber}`} />
+      <PageHeader title={`${insured.firstName} ${insured.lastName}`} description={`Dossier patient couvert ${insured.insuranceNumber}`} />
       <div className="grid gap-6 xl:grid-cols-[1fr_0.9fr]">
         <Card>
           <CardHeader title="Informations administratives" />
@@ -44,8 +44,8 @@ export function InsuredDetailPage() {
           </dl>
         </Card>
         <Card>
-          <CardHeader title="Médecin traitant" description="Le cahier de charges impose un généraliste comme médecin de référence." />
-          {insured.treatingDoctor ? <div className="rounded-xl bg-secondary-50 p-4"><p className="font-bold text-slate-950">Dr {insured.treatingDoctor.firstName} {insured.treatingDoctor.lastName}</p><p className="text-sm text-slate-500">{insured.treatingDoctor.matricule} · {insured.treatingDoctor.type}</p></div> : <p className="text-sm text-slate-500">Aucun médecin traitant enregistré.</p>}
+          <CardHeader title="Praticien référent" description="Le référentiel clinique impose un généraliste comme médecin de référence." />
+          {insured.treatingDoctor ? <div className="rounded-xl bg-secondary-50 p-4"><p className="font-bold text-slate-950">Dr {insured.treatingDoctor.firstName} {insured.treatingDoctor.lastName}</p><p className="text-sm text-slate-500">{insured.treatingDoctor.matricule} · {insured.treatingDoctor.type}</p></div> : <p className="text-sm text-slate-500">Aucun praticien référent enregistré.</p>}
           <RoleGate roles={['AGENT']}>
             <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-end">
               <Input label="Matricule généraliste" value={doctorMatricule} onChange={(e) => setDoctorMatricule(e.target.value)} />

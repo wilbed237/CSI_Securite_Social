@@ -38,7 +38,7 @@ export const router = createBrowserRouter([
       { path: 'doctors', element: <DoctorListPage /> },
       { path: 'doctors/new', element: <ProtectedRoute roles={['AGENT']}><DoctorCreatePage /></ProtectedRoute> },
       { path: 'consultations/new', element: <ProtectedRoute roles={['DOCTOR', 'GENERALIST', 'SPECIALIST']}><ConsultationCreatePage /></ProtectedRoute> },
-      { path: 'prescriptions', element: <ProtectedRoute roles={['DOCTOR', 'GENERALIST', 'SPECIALIST']}><PrescriptionPage /></ProtectedRoute> },
+      { path: 'ordonnances', element: <ProtectedRoute roles={['DOCTOR', 'GENERALIST', 'SPECIALIST']}><PrescriptionPage /></ProtectedRoute> },
       { path: 'disease-sheets', element: <DiseaseSheetPage /> },
       { path: 'reimbursements', element: <ProtectedRoute roles={['AGENT']}><ReimbursementPage /></ProtectedRoute> },
       { path: '*', element: <Navigate to="/app" replace /> },

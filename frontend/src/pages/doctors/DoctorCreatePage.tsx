@@ -29,7 +29,7 @@ export function DoctorCreatePage() {
   };
   return (
     <div>
-      <PageHeader title="Enregistrer un médecin" description="Respecte la règle d'exclusivité généraliste/spécialiste du cahier de charges." />
+      <PageHeader title="Enregistrer un médecin" description="Respecte la règle d'exclusivité généraliste/spécialiste du référentiel clinique." />
       <Card>
         <form className="grid gap-4 md:grid-cols-2" onSubmit={handleSubmit(onSubmit)}>
           <Input label="Matricule" required error={errors.matricule?.message} {...register('matricule')} />

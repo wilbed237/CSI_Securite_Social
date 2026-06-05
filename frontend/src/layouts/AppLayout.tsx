@@ -1,4 +1,4 @@
-import { LogOut, Menu, ShieldCheck, X } from 'lucide-react';
+import { LogOut, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { navigationItems } from '../routes/navigation';
@@ -6,6 +6,8 @@ import { useAuthStore } from '../store/authStore';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import { ThemeToggle } from '../components/ThemeToggle';
+import { CareHealthLogo } from '../components/brand/CareHealthLogo';
+import { PageTransition } from '../components/PageTransition';
 import { cn } from '../utils/cn';
 
 export function AppLayout() {
@@ -24,13 +26,7 @@ export function AppLayout() {
       <aside className={cn('fixed inset-y-0 left-0 z-40 w-72 -translate-x-full border-r border-slate-200 bg-white transition lg:static lg:translate-x-0', open && 'translate-x-0')}>
         <div className="flex h-full flex-col p-5">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span className="rounded-2xl bg-primary-700 p-2 text-white"><ShieldCheck className="h-6 w-6" /></span>
-              <div>
-                <p className="font-black text-slate-950">CSI Santé</p>
-                <p className="text-xs text-slate-500">Back-office médical</p>
-              </div>
-            </div>
+            <CareHealthLogo compact={false} className="text-slate-950" />
             <button className="lg:hidden" onClick={() => setOpen(false)} aria-label="Fermer le menu"><X /></button>
           </div>
           <nav className="mt-8 space-y-1">
@@ -64,8 +60,8 @@ export function AppLayout() {
           <div className="flex items-center justify-between gap-4">
             <button className="rounded-xl border border-slate-200 p-2 lg:hidden" onClick={() => setOpen(true)} aria-label="Ouvrir le menu"><Menu className="h-5 w-5" /></button>
             <div>
-              <p className="text-sm text-slate-500">Application CSI</p>
-              <h1 className="text-xl font-black text-slate-950">Espace sécurisé</h1>
+              <p className="text-sm text-slate-500">Console clinique</p>
+              <h1 className="text-xl font-black text-slate-950">Centre de coordination médicale</h1>
             </div>
             <div className="flex items-center gap-2">
               <ThemeToggle className="border-slate-200 bg-white text-slate-700 hover:bg-slate-100" />
@@ -74,7 +70,9 @@ export function AppLayout() {
           </div>
         </header>
         <main className="p-4 lg:p-8">
-          <Outlet />
+          <PageTransition>
+            <Outlet />
+          </PageTransition>
         </main>
       </div>
     </div>

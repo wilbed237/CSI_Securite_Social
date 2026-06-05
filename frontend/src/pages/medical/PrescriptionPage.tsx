@@ -21,7 +21,7 @@ type MedicationValues = z.infer<typeof medicationSchema>;
 type ReferralValues = z.infer<typeof referralSchema>;
 
 export function PrescriptionPage() {
-  usePageTitle('Prescriptions');
+  usePageTitle('Ordonnances');
   const [lastPrescription, setLastPrescription] = useState<PrescriptionResponse | null>(null);
   const medicationForm = useForm<MedicationValues>({ resolver: zodResolver(medicationSchema) });
   const referralForm = useForm<ReferralValues>({ resolver: zodResolver(referralSchema) });
@@ -37,10 +37,10 @@ export function PrescriptionPage() {
 
   return (
     <div>
-      <PageHeader title="Prescriptions" description="Créer une prescription de médicaments ou orienter vers un spécialiste après consultation." />
+      <PageHeader title="Ordonnances" description="Créer une prescription de thérapeutiques ou orienter vers un spécialiste après consultation." />
       <div className="grid gap-6 xl:grid-cols-2">
         <Card>
-          <CardHeader title="Médicaments" description="Disponible pour tout médecin authentifié." />
+          <CardHeader title="Thérapeutiques" description="Disponible pour tout médecin authentifié." />
           <form className="space-y-4" onSubmit={medicationForm.handleSubmit(submitMedication)}>
             <Input label="ID consultation" required error={medicationForm.formState.errors.consultationId?.message} {...medicationForm.register('consultationId')} />
             <Input label="Médicament" required error={medicationForm.formState.errors.medicationName?.message} {...medicationForm.register('medicationName')} />

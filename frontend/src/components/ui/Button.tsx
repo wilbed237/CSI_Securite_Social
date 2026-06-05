@@ -10,17 +10,17 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variants: Record<ButtonVariant, string> = {
-  primary: 'bg-primary-700 text-white shadow-sm hover:bg-primary-600 focus-visible:outline-primary-600',
-  secondary: 'bg-secondary-100 text-primary-900 hover:bg-secondary-50 focus-visible:outline-primary-500',
+  primary: 'bg-gradient-to-r from-primary-700 via-primary-600 to-accent-500 text-white hover:brightness-110 focus-visible:outline-primary-600',
+  secondary: 'bg-secondary-100 text-primary-900 hover:bg-primary-100 focus-visible:outline-primary-500 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700',
   ghost: 'bg-transparent text-slate-700 hover:bg-slate-100 focus-visible:outline-slate-400',
-  danger: 'bg-danger-500 text-white hover:bg-red-600 focus-visible:outline-danger-500',
+  danger: 'bg-gradient-to-r from-danger-500 to-accent-600 text-white hover:brightness-110 focus-visible:outline-danger-500',
 };
 
 export function Button({ className, variant = 'primary', isLoading, icon, children, disabled, ...props }: ButtonProps) {
   return (
     <button
       className={cn(
-        'inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60',
+        'button-press inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold shadow-md shadow-primary-900/10 transition duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60',
         variants[variant],
         className,
       )}

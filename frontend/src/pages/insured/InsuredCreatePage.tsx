@@ -15,29 +15,29 @@ const schema = z.object({ insuranceNumber: z.string().min(2), firstName: z.strin
 type FormValues = z.infer<typeof schema>;
 
 export function InsuredCreatePage() {
-  usePageTitle('Nouvel assuré');
+  usePageTitle('Nouvel patient couvert');
   const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormValues>({ resolver: zodResolver(schema), defaultValues: { insuranceNumber: 'ASS-0002' } });
   const onSubmit = async (values: FormValues) => {
     try {
       const insured = await profileApi.createInsured({ ...values, email: values.email || undefined });
-      toast.success('Assuré inscrit');
+      toast.success('Patient couvert inscrit');
       navigate(`/app/insured/${insured.insuranceNumber}`);
     } catch (error) { toast.error(extractApiError(error)); }
   };
   return (
     <div>
-      <PageHeader title="Inscrire un assuré" description="Fonction réservée aux agents de sécurité sociale." />
+      <PageHeader title="Inscrire un patient couvert" description="Fonction réservée aux agents de coordination médicale." />
       <Card>
         <form className="grid gap-4 md:grid-cols-2" onSubmit={handleSubmit(onSubmit)}>
-          <Input label="Numéro assurance" required error={errors.insuranceNumber?.message} {...register('insuranceNumber')} />
+          <Input label="Identifiant patient" required error={errors.insuranceNumber?.message} {...register('insuranceNumber')} />
           <Input label="Date naissance" type="date" required error={errors.birthDate?.message} {...register('birthDate')} />
           <Input label="Prénom" required error={errors.firstName?.message} {...register('firstName')} />
           <Input label="Nom" required error={errors.lastName?.message} {...register('lastName')} />
           <Input className="md:col-span-2" label="Adresse" required error={errors.address?.message} {...register('address')} />
           <Input label="Téléphone" error={errors.phoneNumber?.message} {...register('phoneNumber')} />
           <Input label="Email" type="email" error={errors.email?.message} {...register('email')} />
-          <Button className="md:col-span-2" isLoading={isSubmitting}>Enregistrer l'assuré</Button>
+          <Button className="md:col-span-2" isLoading={isSubmitting}>Enregistrer l'patient couvert</Button>
         </form>
       </Card>
     </div>

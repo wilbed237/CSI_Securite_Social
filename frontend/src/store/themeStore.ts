@@ -1,26 +1,43 @@
 import { create } from 'zustand';
 
-export type ThemeMode = 'light' | 'dark';
+export type ThemeMode = 'light' | 'dark-blue' | 'dark-orange' | 'dark-purple' | 'dark-black';
 
-const STORAGE_KEY = 'csi-theme-mode';
+const STORAGE_KEY = 'care-health-theme-mode';
+const DARK_CLASSES: ThemeMode[] = ['dark-blue', 'dark-orange', 'dark-purple', 'dark-black'];
+export const THEME_OPTIONS: { value: ThemeMode; label: string; shortLabel: string }[] = [
+  { value: 'light', label: 'Clair clinique', shortLabel: 'Clair' },
+  { value: 'dark-blue', label: 'Nuit bleutée', shortLabel: 'Bleu' },
+  { value: 'dark-orange', label: 'Nuit ambrée', shortLabel: 'Orange' },
+  { value: 'dark-purple', label: 'Nuit violacée', shortLabel: 'Violet' },
+  { value: 'dark-black', label: 'Noir profond', shortLabel: 'Noir' },
+];
+
+function isThemeMode(value: string | null): value is ThemeMode {
+  return value === 'light' || DARK_CLASSES.includes(value as ThemeMode);
+}
 
 function getPreferredTheme(): ThemeMode {
   if (typeof window === 'undefined') return 'light';
-  const stored = window.localStorage.getItem(STORAGE_KEY) as ThemeMode | null;
-  if (stored === 'light' || stored === 'dark') return stored;
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  const stored = window.localStorage.getItem(STORAGE_KEY);
+  if (isThemeMode(stored)) return stored;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark-blue' : 'light';
 }
 
 function applyTheme(theme: ThemeMode) {
   if (typeof document === 'undefined') return;
-  document.documentElement.classList.toggle('dark', theme === 'dark');
-  document.documentElement.style.colorScheme = theme;
+  const root = document.documentElement;
+  root.classList.remove('dark', ...DARK_CLASSES.map((mode) => `theme-${mode}`));
+  if (theme !== 'light') {
+    root.classList.add('dark', `theme-${theme}`);
+  }
+  root.dataset.theme = theme;
+  root.style.colorScheme = theme === 'light' ? 'light' : 'dark';
 }
 
 interface ThemeState {
   theme: ThemeMode;
   setTheme: (theme: ThemeMode) => void;
-  toggleTheme: () => void;
+  cycleTheme: () => void;
 }
 
 const initialTheme = getPreferredTheme();
@@ -33,12 +50,13 @@ export const useThemeStore = create<ThemeState>((set, get) => ({
     applyTheme(theme);
     set({ theme });
   },
-  toggleTheme: () => {
-    const nextTheme = get().theme === 'dark' ? 'light' : 'dark';
+  cycleTheme: () => {
+    const currentIndex = THEME_OPTIONS.findIndex((option) => option.value === get().theme);
+    const nextTheme = THEME_OPTIONS[(currentIndex + 1) % THEME_OPTIONS.length].value;
     get().setTheme(nextTheme);
   },
 }));
 
 export function initializeTheme() {
-  applyTheme(initialTheme);
+  applyTheme(getPreferredTheme());
 }

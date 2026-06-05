@@ -19,13 +19,13 @@ const createSchema = z.object({ consultationId: z.string().uuid('ID consultation
 type CreateValues = z.infer<typeof createSchema>;
 
 export function DiseaseSheetPage() {
-  usePageTitle('Feuilles de maladie');
+  usePageTitle('Feuilles de soins');
   const [sheetNumber, setSheetNumber] = useState('');
   const [sheet, setSheet] = useState<DiseaseSheetResponse | null>(null);
   const form = useForm<CreateValues>({ resolver: zodResolver(createSchema) });
 
   const create = async (values: CreateValues) => {
-    try { const result = await medicalApi.createDiseaseSheet(values); setSheet(result); setSheetNumber(result.sheetNumber); toast.success('Feuille de maladie créée'); }
+    try { const result = await medicalApi.createDiseaseSheet(values); setSheet(result); setSheetNumber(result.sheetNumber); toast.success('Feuille de soins créée'); }
     catch (error) { toast.error(extractApiError(error)); }
   };
   const search = async () => {
@@ -35,7 +35,7 @@ export function DiseaseSheetPage() {
 
   return (
     <div>
-      <PageHeader title="Feuilles de maladie" description="Document central qui synthétise la consultation et sert de base au remboursement." />
+      <PageHeader title="Feuilles de soins" description="Document central qui synthétise la consultation et sert de base au prise en charge." />
       <div className="grid gap-6 xl:grid-cols-[1fr_0.9fr]">
         <Card>
           <CardHeader title="Créer une feuille" description="Nécessite une consultation existante." />
@@ -48,7 +48,7 @@ export function DiseaseSheetPage() {
         <Card>
           <CardHeader title="Rechercher une feuille" />
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end"><Input label="Numéro feuille" value={sheetNumber} onChange={(e) => setSheetNumber(e.target.value)} /><Button icon={<Search className="h-4 w-4" />} onClick={search}>Rechercher</Button></div>
-          {sheet && <div className="mt-5 rounded-xl bg-slate-50 p-4 text-sm"><p><strong>Numéro :</strong> {sheet.sheetNumber}</p><p><strong>Assuré :</strong> {sheet.insuranceNumber}</p><p><strong>Médecin :</strong> {sheet.doctorMatricule}</p><p><strong>Coût :</strong> {sheet.consultationCost}</p><div className="mt-2"><Badge tone="success">{sheet.status}</Badge></div></div>}
+          {sheet && <div className="mt-5 rounded-xl bg-slate-50 p-4 text-sm"><p><strong>Numéro :</strong> {sheet.sheetNumber}</p><p><strong>Patient couvert :</strong> {sheet.insuranceNumber}</p><p><strong>Médecin :</strong> {sheet.doctorMatricule}</p><p><strong>Coût :</strong> {sheet.consultationCost}</p><div className="mt-2"><Badge tone="success">{sheet.status}</Badge></div></div>}
         </Card>
       </div>
     </div>

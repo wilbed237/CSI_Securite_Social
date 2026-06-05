@@ -22,7 +22,7 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 const roleOptions = [
-  { label: 'Agent sécurité sociale', value: 'AGENT' },
+  { label: 'Agent coordination médicale', value: 'AGENT' },
   { label: 'Médecin généraliste', value: 'GENERALIST' },
   { label: 'Médecin spécialiste', value: 'SPECIALIST' },
 ];

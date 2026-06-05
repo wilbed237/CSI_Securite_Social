@@ -1,6 +1,8 @@
 import { Outlet } from 'react-router-dom';
 import { env } from '../config/env';
 import { ThemeToggle } from '../components/ThemeToggle';
+import { CareHealthLogo } from '../components/brand/CareHealthLogo';
+import { PageTransition } from '../components/PageTransition';
 
 export function AuthLayout() {
   const appName = String(env.appName);
@@ -12,19 +14,17 @@ export function AuthLayout() {
       </div>
       <section className="gradient-health hidden items-center justify-center p-10 text-white lg:flex">
         <div className="max-w-xl">
-          <div className="animated-wave-logo mb-8 inline-flex rounded-2xl bg-white/10 px-5 py-2.5 text-base font-black tracking-wide ring-1 ring-white/20" aria-label={appName}>
-            {appName.split('').map((letter: string, index: number) => (
-              <span key={`${letter}-${index}`} style={{ animationDelay: `${index * 0.055}s` }}>
-                {letter === ' ' ? '\u00A0' : letter}
-              </span>
-            ))}
+          <div className="animated-wave-logo mb-8 inline-flex rounded-2xl bg-white/10 px-5 py-2.5 ring-1 ring-white/20" aria-label={appName}>
+            <CareHealthLogo className="text-white" />
           </div>
-          <h1 className="text-5xl font-black leading-tight">Gestion digitale des assurés, médecins et remboursements.</h1>
-          <p className="mt-6 text-lg leading-8 text-blue-50">Une interface moderne pour les agents de sécurité sociale et les médecins, alignée sur le cahier de charges CSI.</p>
+          <h1 className="text-5xl font-black leading-tight">Orchestration clinique des patients, praticiens et parcours de soins.</h1>
+          <p className="mt-6 text-lg leading-8 text-blue-50">Une console médicale fluide pour suivre les dossiers patients, les actes cliniques et la continuité thérapeutique.</p>
         </div>
       </section>
       <section className="flex items-center justify-center p-6">
-        <Outlet />
+        <PageTransition>
+          <Outlet />
+        </PageTransition>
       </section>
     </main>
   );

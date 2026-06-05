@@ -1,6 +1,6 @@
-# Frontend CSI Assurance Santé
+# Frontend Care Health
 
-Interface React moderne pour le backend CSI Spring Boot microservices. Elle couvre les cas d'utilisation du document `csi.pdf` : authentification, gestion des assurés, médecins, consultations, prescriptions, feuilles de maladie et remboursements.
+Interface React moderne pour le backend Care Health Spring Boot microservices. Elle couvre les cas d'utilisation du document `csi.pdf` : authentification, gestion des patients couverts, médecins, consultations, ordonnances, feuilles de soins et prises en charge.
 
 ## 1. Technologies utilisées
 
@@ -46,7 +46,7 @@ frontend/
 
 - Node.js 20+ recommandé
 - npm 10+
-- Backend CSI lancé via Docker Compose ou services Spring Boot
+- Backend Care Health lancé via Docker Compose ou services Spring Boot
 
 ## 5. Installation
 
@@ -67,7 +67,7 @@ Variables :
 
 ```env
 VITE_API_GATEWAY_URL=http://localhost:8080
-VITE_APP_NAME=CSI Assurance Santé
+VITE_APP_NAME=Care Health
 ```
 
 Le frontend utilise prioritairement l'API Gateway du backend.
@@ -121,14 +121,14 @@ npm run dev
 | `/login` | Connexion | public |
 | `/register` | Création compte applicatif | public |
 | `/app` | Dashboard | authentifié |
-| `/app/insured` | Recherche assurés | agent, médecin |
-| `/app/insured/new` | Inscription assuré | agent |
+| `/app/insured` | Recherche patients couverts | agent, médecin |
+| `/app/insured/new` | Inscription patient couvert | agent |
 | `/app/doctors` | Liste médecins | agent, médecin |
 | `/app/doctors/new` | Création médecin | agent |
 | `/app/consultations/new` | Création consultation | médecin |
-| `/app/prescriptions` | Prescriptions | médecin |
-| `/app/disease-sheets` | Feuilles maladie | agent, médecin |
-| `/app/reimbursements` | Remboursements | agent |
+| `/app/ordonnances` | Ordonnances | médecin |
+| `/app/disease-sheets` | Feuilles de soins | agent, médecin |
+| `/app/reimbursements` | Prises en charge | agent |
 | `/forbidden` | Accès refusé | public |
 
 ## 11. Connexion au backend
@@ -149,7 +149,7 @@ npm run dev
 
 Données utiles :
 
-- Assuré : `ASS-0001`
+- Patient couvert : `ASS-0001`
 - Généraliste : `MED-GEN-001`
 - Spécialiste : `MED-SPE-001`
 
@@ -169,13 +169,13 @@ npm run test
 Vérifier que le backend est lancé et que `VITE_API_GATEWAY_URL` pointe vers `http://localhost:8080`.
 
 ### 403 accès refusé
-Le compte connecté n'a pas le rôle attendu. Exemple : les remboursements nécessitent `AGENT`.
+Le compte connecté n'a pas le rôle attendu. Exemple : les prises en charge nécessitent `AGENT`.
 
 ### 401 session expirée
 Le frontend tente un refresh token. Si le refresh échoue, reconnectez-vous.
 
-### Création feuille maladie impossible
-Créer d'abord une consultation et copier son `id` dans le formulaire feuille maladie.
+### Création feuille de soins impossible
+Créer d'abord une consultation et copier son `id` dans le formulaire feuille de soins.
 
-### Remboursement impossible
-Une feuille doit exister et ne peut être remboursée qu'une seule fois.
+### Prise en charge impossible
+Une feuille doit exister et ne peut être prise en charge qu'une seule fois.

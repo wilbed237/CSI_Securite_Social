@@ -23,7 +23,7 @@ const schema = z.object({ sheetNumber: z.string().min(1), paymentType: z.enum(['
 type FormValues = z.infer<typeof schema>;
 
 export function ReimbursementPage() {
-  usePageTitle('Remboursements');
+  usePageTitle('Prises en charge');
   const [last, setLast] = useState<ReimbursementResponse | null>(null);
   const [reference, setReference] = useState('');
   const modal = useDisclosure();
@@ -31,32 +31,32 @@ export function ReimbursementPage() {
   const paymentType = useWatch({ control: form.control, name: 'paymentType' });
 
   const submit = async (values: FormValues) => {
-    try { const result = await reimbursementApi.create(values); setLast(result); toast.success('Remboursement exécuté'); }
+    try { const result = await reimbursementApi.create(values); setLast(result); toast.success('Prise en charge exécuté'); }
     catch (error) { toast.error(extractApiError(error)); }
   };
   const search = async () => {
-    try { const result = await reimbursementApi.get(reference); setLast(result); toast.success('Remboursement trouvé'); }
+    try { const result = await reimbursementApi.get(reference); setLast(result); toast.success('Prise en charge trouvé'); }
     catch (error) { toast.error(extractApiError(error)); }
   };
 
   return (
     <div>
-      <PageHeader title="Remboursements" description="Calcul automatique : 100% généraliste, 80% spécialiste. Réservé aux agents." />
+      <PageHeader title="Prises en charge" description="Calcul automatique : 100% généraliste, 80% spécialiste. Réservé aux agents." />
       <div className="grid gap-6 xl:grid-cols-[1fr_0.9fr]">
-        <Card><CardHeader title="Effectuer un remboursement" description="Une feuille de maladie ne peut être remboursée qu'une seule fois." />
+        <Card><CardHeader title="Effectuer une prise en charge" description="Une feuille de soins ne peut être prise en charge qu'une seule fois." />
           <form className="space-y-4" onSubmit={form.handleSubmit(() => modal.openModal())}>
-            <Input label="Numéro feuille maladie" required error={form.formState.errors.sheetNumber?.message} {...form.register('sheetNumber')} />
+            <Input label="Numéro feuille de soins" required error={form.formState.errors.sheetNumber?.message} {...form.register('sheetNumber')} />
             <Select label="Mode paiement" required options={[{ label: 'Espèces', value: 'CASH' }, { label: 'Virement bancaire', value: 'BANK_TRANSFER' }]} error={form.formState.errors.paymentType?.message} {...form.register('paymentType')} />
             {paymentType === 'BANK_TRANSFER' && <Input label="IBAN" required error={form.formState.errors.bankIban?.message} {...form.register('bankIban')} />}
-            <Button icon={<CreditCard className="h-4 w-4" />}>Calculer et rembourser</Button>
+            <Button icon={<CreditCard className="h-4 w-4" />}>Calculer et valider</Button>
           </form>
         </Card>
         <Card><CardHeader title="Consulter une référence" />
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end"><Input label="Référence remboursement" value={reference} onChange={(e) => setReference(e.target.value)} /><Button icon={<Search className="h-4 w-4" />} onClick={search}>Rechercher</Button></div>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end"><Input label="Référence prise en charge" value={reference} onChange={(e) => setReference(e.target.value)} /><Button icon={<Search className="h-4 w-4" />} onClick={search}>Rechercher</Button></div>
           {last && <div className="mt-5 rounded-xl bg-slate-50 p-4 text-sm"><p><strong>Référence :</strong> {last.reimbursementNumber}</p><p><strong>Feuille :</strong> {last.sheetNumber}</p><p><strong>Base :</strong> {last.baseAmount}</p><p><strong>Taux :</strong> {Number(last.rate) * 100}%</p><p><strong>Montant :</strong> {last.reimbursedAmount}</p><div className="mt-2"><Badge tone="success">{last.status}</Badge></div></div>}
         </Card>
       </div>
-      <ConfirmModal open={modal.open} title="Confirmer le remboursement" message="Cette action exécutera le paiement et empêchera un deuxième remboursement de la même feuille." onClose={modal.closeModal} onConfirm={() => { modal.closeModal(); form.handleSubmit(submit)(); }} />
+      <ConfirmModal open={modal.open} title="Confirmer le prise en charge" message="Cette action exécutera le paiement et empêchera un deuxième prise en charge de la même feuille." onClose={modal.closeModal} onConfirm={() => { modal.closeModal(); form.handleSubmit(submit)(); }} />
     </div>
   );
 }
