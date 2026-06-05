@@ -829,6 +829,84 @@ body,
   color: var(--theme-muted) !important;
 }
 
+
+
+.theme-toggle-shell {
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--theme-surface) 72%, var(--theme-primary) 12%),
+      color-mix(in srgb, var(--theme-surface) 78%, var(--theme-accent) 10%));
+  border-color: color-mix(in srgb, var(--theme-border) 72%, var(--theme-primary) 28%);
+  color: var(--theme-text);
+}
+
+.theme-toggle-shell button + button {
+  border-color: color-mix(in srgb, var(--theme-border) 70%, transparent);
+}
+
+.theme-toggle-shell button:hover {
+  background: color-mix(in srgb, var(--theme-tinted-surface) 52%, transparent);
+}
+
+.theme-preview-dot {
+  display: inline-block;
+  width: 0.8rem;
+  height: 0.8rem;
+  flex: none;
+  border-radius: 999px;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.42),
+    0 0 0 1px color-mix(in srgb, var(--theme-border) 64%, transparent),
+    0 8px 18px rgba(2, 6, 23, 0.20);
+}
+
+.theme-menu {
+  background:
+    linear-gradient(145deg,
+      color-mix(in srgb, var(--theme-surface) 94%, var(--theme-primary) 6%),
+      color-mix(in srgb, var(--theme-surface) 92%, var(--theme-accent) 8%));
+  border-color: color-mix(in srgb, var(--theme-border) 72%, var(--theme-primary) 28%);
+  color: var(--theme-text);
+  animation: theme-menu-enter 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  transform-origin: top right;
+}
+
+.theme-menu > div:first-child {
+  color: var(--theme-muted);
+}
+
+.theme-menu-item {
+  color: var(--theme-text);
+}
+
+.theme-menu-item:hover,
+.theme-menu-item:focus-visible {
+  background: color-mix(in srgb, var(--theme-tinted-surface) 62%, var(--theme-surface) 38%);
+  outline: none;
+}
+
+.theme-menu-item.is-selected {
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--theme-primary) 24%, var(--theme-surface) 76%),
+      color-mix(in srgb, var(--theme-accent) 18%, var(--theme-surface) 82%));
+  color: var(--theme-text);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--theme-primary) 38%, transparent);
+}
+
+@keyframes theme-menu-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animated-wave-title span,
   .animated-wave-logo span,
