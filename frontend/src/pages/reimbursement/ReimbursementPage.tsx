@@ -31,11 +31,11 @@ export function ReimbursementPage() {
   const paymentType = useWatch({ control: form.control, name: 'paymentType' });
 
   const submit = async (values: FormValues) => {
-    try { const result = await reimbursementApi.create(values); setLast(result); toast.success('Prise en charge exécuté'); }
+    try { const result = await reimbursementApi.create(values); setLast(result); toast.success('Prise en charge exécutée'); }
     catch (error) { toast.error(extractApiError(error)); }
   };
   const search = async () => {
-    try { const result = await reimbursementApi.get(reference); setLast(result); toast.success('Prise en charge trouvé'); }
+    try { const result = await reimbursementApi.get(reference); setLast(result); toast.success('Prise en charge trouvée'); }
     catch (error) { toast.error(extractApiError(error)); }
   };
 
@@ -56,7 +56,7 @@ export function ReimbursementPage() {
           {last && <div className="mt-5 rounded-xl bg-slate-50 p-4 text-sm"><p><strong>Référence :</strong> {last.reimbursementNumber}</p><p><strong>Feuille :</strong> {last.sheetNumber}</p><p><strong>Base :</strong> {last.baseAmount}</p><p><strong>Taux :</strong> {Number(last.rate) * 100}%</p><p><strong>Montant :</strong> {last.reimbursedAmount}</p><div className="mt-2"><Badge tone="success">{last.status}</Badge></div></div>}
         </Card>
       </div>
-      <ConfirmModal open={modal.open} title="Confirmer la prise en charge" message="Cette action exécutera le paiement et empêchera une deuxième prise en charge de la même feuille." onClose={modal.closeModal} onConfirm={() => { modal.closeModal(); form.handleSubmit(submit)(); }} />
+      <ConfirmModal open={modal.open} title="Confirmer la prise en charge" message="Cette action exécutera le paiement et empêchera une deuxième prise en charge de la même feuille de soins." onClose={modal.closeModal} onConfirm={() => { modal.closeModal(); form.handleSubmit(submit)(); }} />
     </div>
   );
 }

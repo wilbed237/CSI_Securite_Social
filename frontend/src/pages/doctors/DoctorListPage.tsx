@@ -9,7 +9,7 @@ import { RoleGate } from '../../components/RoleGate';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { DataTable } from '../../components/ui/Table';
-import { ErrorMessage } from '../../components/ui/ErrorMessage';
+import { ErrorState } from '../../components/ui/ErrorState';
 import { Loader } from '../../components/ui/Loader';
 import { Select } from '../../components/ui/Select';
 import { usePageTitle } from '../../hooks/usePageTitle';
@@ -25,7 +25,7 @@ export function DoctorListPage() {
       <PageHeader title="Médecins" description="Annuaire des médecins généralistes et spécialistes enregistrés." action={<RoleGate roles={['AGENT']}><Link to="/app/doctors/new"><Button icon={<Plus className="h-4 w-4" />}>Nouveau médecin</Button></Link></RoleGate>} />
       <div className="mb-4 max-w-xs"><Select label="Filtrer par type" value={type} onChange={(e) => setType(e.target.value as DoctorType | '')} options={[{ label: 'Tous', value: '' }, { label: 'Généralistes', value: 'GENERALIST' }, { label: 'Spécialistes', value: 'SPECIALIST' }]} /></div>
       {query.isLoading && <Loader />}
-      {query.isError && <ErrorMessage message={extractApiError(query.error)} />}
+      {query.isError && <ErrorState message={extractApiError(query.error)} />}
       {query.data && (
         <DataTable headers={['Matricule', 'Nom', 'Type', 'Spécialité', 'Contact']} empty="Aucun médecin trouvé.">
           {query.data.content.map((doctor) => (

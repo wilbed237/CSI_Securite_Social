@@ -10,7 +10,7 @@ import { RoleGate } from '../../components/RoleGate';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { Card, CardHeader } from '../../components/ui/Card';
-import { ErrorMessage } from '../../components/ui/ErrorMessage';
+import { ErrorState } from '../../components/ui/ErrorState';
 import { Input } from '../../components/ui/Input';
 import { Loader } from '../../components/ui/Loader';
 import { usePageTitle } from '../../hooks/usePageTitle';
@@ -27,7 +27,7 @@ export function InsuredDetailPage() {
   };
 
   if (query.isLoading) return <Loader />;
-  if (query.isError) return <ErrorMessage message={extractApiError(query.error)} />;
+  if (query.isError) return <ErrorState message={extractApiError(query.error)} />;
   const insured = query.data!;
   return (
     <div>

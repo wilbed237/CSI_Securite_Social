@@ -417,14 +417,6 @@ body,
   color: var(--theme-accent) !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .animated-wave-title span,
-  .animated-wave-logo span,
-  .page-transition,
-  .care-logo-mark-animated {
-    animation: none;
-  }
-}
 
 
 .button-press {
@@ -504,4 +496,16 @@ body,
 .dark .theme-toggle option {
   background: var(--theme-surface);
   color: var(--theme-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animated-wave-title span,
+  .animated-wave-logo span,
+  .page-transition,
+  .care-logo-mark-animated,
+  .button-press,
+  .care-card {
+    animation: none !important;
+    transition: none !important;
+  }
 }
