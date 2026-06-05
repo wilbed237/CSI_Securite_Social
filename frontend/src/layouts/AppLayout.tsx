@@ -46,11 +46,11 @@ export function AppLayout() {
               </NavLink>
             ))}
           </nav>
-          <div className="mt-auto rounded-2xl bg-slate-50 p-4">
-            <p className="text-sm font-bold text-slate-950">{user?.username}</p>
-            <p className="truncate text-xs text-slate-500">{user?.email}</p>
+          <div className="care-user-panel mt-auto rounded-2xl p-4">
+            <p className="care-user-name text-sm font-bold">{user?.username}</p>
+            <p className="care-user-email truncate text-xs">{user?.email}</p>
             <div className="mt-3 flex flex-wrap gap-1.5">{user?.roles.map((role) => <Badge key={role} tone="primary">{role}</Badge>)}</div>
-            <Button className="mt-4 w-full" variant="ghost" icon={<LogOut className="h-4 w-4" />} onClick={logout}>Déconnexion</Button>
+            <Button className="care-user-logout mt-4 w-full" variant="secondary" icon={<LogOut className="h-4 w-4" />} onClick={logout}>Déconnexion</Button>
           </div>
         </div>
       </aside>
