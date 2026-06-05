@@ -29,12 +29,12 @@ export function DoctorListPage() {
       {query.data && (
         <DataTable headers={['Matricule', 'Nom', 'Type', 'Spécialité', 'Contact']} empty="Aucun médecin trouvé.">
           {query.data.content.map((doctor) => (
-            <tr key={doctor.id}>
-              <td className="px-4 py-3 font-semibold text-slate-900">{doctor.matricule}</td>
-              <td className="px-4 py-3">Dr {doctor.firstName} {doctor.lastName}</td>
+            <tr key={doctor.id} className="care-table-row">
+              <td className="care-table-cell-strong px-4 py-3 font-semibold">{doctor.matricule}</td>
+              <td className="care-table-cell px-4 py-3">Dr {doctor.firstName} {doctor.lastName}</td>
               <td className="px-4 py-3"><Badge tone={doctor.type === 'GENERALIST' ? 'success' : 'info'}>{doctor.type}</Badge></td>
-              <td className="px-4 py-3">{doctor.specialty ?? '-'}</td>
-              <td className="px-4 py-3 text-slate-500">{doctor.email ?? doctor.phoneNumber ?? '-'}</td>
+              <td className="care-table-cell px-4 py-3">{doctor.specialty ?? '-'}</td>
+              <td className="care-table-cell-muted px-4 py-3">{doctor.email ?? doctor.phoneNumber ?? '-'}</td>
             </tr>
           ))}
         </DataTable>
