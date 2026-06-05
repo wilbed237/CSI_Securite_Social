@@ -42,7 +42,7 @@ export function DiseaseSheetPage() {
           <form className="space-y-4" onSubmit={form.handleSubmit(create)}>
             <Input label="ID consultation" required error={form.formState.errors.consultationId?.message} {...form.register('consultationId')} />
             <Textarea label="Diagnostic" required error={form.formState.errors.diagnosis?.message} {...form.register('diagnosis')} />
-            <Button isLoading={form.formState.isSubmitting} icon={<FilePlus className="h-4 w-4" />}>Créer feuille</Button>
+            <Button isLoading={form.formState.isSubmitting} icon={<FilePlus className="h-4 w-4" />}>Créer une feuille de soins</Button>
           </form>
         </Card>
         <Card>

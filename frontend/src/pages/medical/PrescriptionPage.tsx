@@ -45,7 +45,7 @@ export function PrescriptionPage() {
             <Input label="ID consultation" required error={medicationForm.formState.errors.consultationId?.message} {...medicationForm.register('consultationId')} />
             <Input label="Médicament" required error={medicationForm.formState.errors.medicationName?.message} {...medicationForm.register('medicationName')} />
             <Input label="Posologie" required error={medicationForm.formState.errors.posology?.message} {...medicationForm.register('posology')} />
-            <Button isLoading={medicationForm.formState.isSubmitting} icon={<Pill className="h-4 w-4" />}>Prescrire médicament</Button>
+            <Button isLoading={medicationForm.formState.isSubmitting} icon={<Pill className="h-4 w-4" />}>Enregistrer une ordonnance</Button>
           </form>
         </Card>
         <Card>

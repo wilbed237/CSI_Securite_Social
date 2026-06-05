@@ -10,7 +10,7 @@ export interface NavigationItem {
 }
 
 export const navigationItems: NavigationItem[] = [
-  { label: 'Dashboard', to: '/app', icon: Home },
+  { label: 'Tableau de bord médical', to: '/app', icon: Home },
   { label: 'Patients couverts', to: '/app/insured', icon: Users, roles: ['AGENT', 'DOCTOR', 'GENERALIST', 'SPECIALIST'] },
   { label: 'Nouveau patient couvert', to: '/app/insured/new', icon: UserPlus, roles: ['AGENT'] },
   { label: 'Médecins', to: '/app/doctors', icon: Stethoscope, roles: ['AGENT', 'DOCTOR', 'GENERALIST', 'SPECIALIST'] },

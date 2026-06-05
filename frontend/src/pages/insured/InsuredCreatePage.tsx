@@ -37,7 +37,7 @@ export function InsuredCreatePage() {
           <Input className="md:col-span-2" label="Adresse" required error={errors.address?.message} {...register('address')} />
           <Input label="Téléphone" error={errors.phoneNumber?.message} {...register('phoneNumber')} />
           <Input label="Email" type="email" error={errors.email?.message} {...register('email')} />
-          <Button className="md:col-span-2" isLoading={isSubmitting}>Enregistrer l'patient couvert</Button>
+          <Button className="md:col-span-2" isLoading={isSubmitting}>Enregistrer le dossier patient</Button>
         </form>
       </Card>
     </div>

@@ -20,10 +20,12 @@ Interface React moderne pour le backend Care Health Spring Boot microservices. E
 
 - Mode clair et plusieurs thèmes sombres avec bouton de bascule et persistance locale : bleuté, orangé, violacé, noir profond, vert bloc opératoire, cyan néon médical et rose cardio nuit.
 
-- Primaire : bleu santé professionnel `#0f4c81`
-- Secondaire : cyan doux `#e0f2fe`
-- Accent : vert action `#10b981`
-- Neutres : palette Slate
+- Primaire : bleu médical profond `#2563EB`
+- Secondaire : turquoise santé `#14B8A6`
+- Accent : vert soin `#22C55E`
+- Couleur douce : bleu ciel clair `#E0F2FE`
+- Neutre clair : `#F8FAFC`
+- Orange de mise en relief : `#F97316`
 - États : succès vert, erreur rouge, avertissement ambre, information bleu
 
 ## 3. Structure du projet
@@ -66,11 +68,11 @@ cp .env.example .env
 Variables :
 
 ```env
-VITE_API_GATEWAY_URL=http://localhost:8080
+VITE_API_BASE_URL=http://localhost:8080
 VITE_APP_NAME=Care Health
 ```
 
-Le frontend utilise prioritairement l'API Gateway du backend.
+Le frontend utilise `VITE_API_BASE_URL` pour joindre l'API Gateway du backend.
 
 ## 7. Lancer en développement
 
@@ -120,7 +122,7 @@ npm run dev
 | `/` | Landing page | public |
 | `/login` | Connexion | public |
 | `/register` | Création compte applicatif | public |
-| `/app` | Dashboard | authentifié |
+| `/app` | Tableau de bord médical | authentifié |
 | `/app/insured` | Recherche patients couverts | agent, médecin |
 | `/app/insured/new` | Inscription patient couvert | agent |
 | `/app/doctors` | Liste médecins | agent, médecin |
@@ -166,7 +168,7 @@ npm run test
 ## 14. Problèmes fréquents
 
 ### Erreur réseau ou 500
-Vérifier que le backend est lancé et que `VITE_API_GATEWAY_URL` pointe vers `http://localhost:8080`.
+Vérifier que le backend est lancé et que `VITE_API_BASE_URL` pointe vers `http://localhost:8080`.
 
 ### 403 accès refusé
 Le compte connecté n'a pas le rôle attendu. Exemple : les prises en charge nécessitent `AGENT`.

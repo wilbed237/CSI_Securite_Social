@@ -56,7 +56,7 @@ export function ReimbursementPage() {
           {last && <div className="mt-5 rounded-xl bg-slate-50 p-4 text-sm"><p><strong>Référence :</strong> {last.reimbursementNumber}</p><p><strong>Feuille :</strong> {last.sheetNumber}</p><p><strong>Base :</strong> {last.baseAmount}</p><p><strong>Taux :</strong> {Number(last.rate) * 100}%</p><p><strong>Montant :</strong> {last.reimbursedAmount}</p><div className="mt-2"><Badge tone="success">{last.status}</Badge></div></div>}
         </Card>
       </div>
-      <ConfirmModal open={modal.open} title="Confirmer le prise en charge" message="Cette action exécutera le paiement et empêchera un deuxième prise en charge de la même feuille." onClose={modal.closeModal} onConfirm={() => { modal.closeModal(); form.handleSubmit(submit)(); }} />
+      <ConfirmModal open={modal.open} title="Confirmer la prise en charge" message="Cette action exécutera le paiement et empêchera une deuxième prise en charge de la même feuille." onClose={modal.closeModal} onConfirm={() => { modal.closeModal(); form.handleSubmit(submit)(); }} />
     </div>
   );
 }

@@ -54,7 +54,7 @@ export function RegisterPage() {
         <Input label="Téléphone" error={errors.phoneNumber?.message} {...register('phoneNumber')} />
         <Select label="Profil" required options={roleOptions} error={errors.role?.message} {...register('role')} />
         <Input className="sm:col-span-2" label="Mot de passe" type="password" required error={errors.password?.message} {...register('password')} />
-        <Button className="sm:col-span-2" isLoading={isSubmitting}>Créer le compte</Button>
+        <Button className="sm:col-span-2" isLoading={isSubmitting}>Créer le profil de soins</Button>
       </form>
       <p className="mt-5 text-center text-sm text-slate-500"><Link className="font-semibold text-primary-700" to="/login">Retour connexion</Link></p>
     </Card>
