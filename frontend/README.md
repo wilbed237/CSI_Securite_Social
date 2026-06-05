@@ -18,7 +18,7 @@ Interface React moderne pour le backend Care Health Spring Boot microservices. E
 
 ## 2. Identité visuelle
 
-- Mode clair / sombre avec bouton de bascule et persistance locale.
+- Mode clair et plusieurs thèmes sombres avec bouton de bascule et persistance locale : bleuté, orangé, violacé, noir profond, vert bloc opératoire, cyan néon médical et rose cardio nuit.
 
 - Primaire : bleu santé professionnel `#0f4c81`
 - Secondaire : cyan doux `#e0f2fe`
