@@ -127,8 +127,8 @@ body,
 }
 
 .dark body {
-  background: var(--theme-bg);
-  color: #e2e8f0;
+  background: var(--theme-bg) !important;
+  color: var(--theme-text);
 }
 
 .dark .bg-slate-50,
@@ -230,12 +230,92 @@ body,
   color: var(--theme-text) !important;
 }
 
-.dark .gradient-health {
+.dark
+
+#root {
+  min-height: 100vh;
+  background: var(--theme-bg);
+}
+
+.care-page-title {
+  color: var(--theme-text) !important;
+  text-shadow: 0 1px 0 color-mix(in srgb, var(--theme-surface) 28%, transparent);
+}
+
+.care-page-description {
+  color: var(--theme-muted) !important;
+}
+
+.care-card,
+.care-stat-card {
+  color: var(--theme-text);
+}
+
+.care-card p,
+.care-stat-card p {
+  color: var(--theme-muted);
+}
+
+.care-card h1,
+.care-card h2,
+.care-card h3,
+.care-stat-card h1,
+.care-stat-card h2,
+.care-stat-card h3,
+.care-stat-card .text-3xl {
+  color: var(--theme-text) !important;
+}
+
+.dark .text-white:not(.gradient-health *):not(.care-btn-primary):not(.care-btn-danger) {
+  color: var(--theme-text) !important;
+}
+
+.gradient-health {
   background: var(--theme-bg);
 }
 
 .dark .backdrop-blur {
   background-color: var(--theme-card-overlay);
+}
+
+
+
+#root {
+  min-height: 100vh;
+  background: var(--theme-bg);
+}
+
+.care-page-title {
+  color: var(--theme-text) !important;
+  text-shadow: 0 1px 0 color-mix(in srgb, var(--theme-surface) 28%, transparent);
+}
+
+.care-page-description {
+  color: var(--theme-muted) !important;
+}
+
+.care-card,
+.care-stat-card {
+  color: var(--theme-text);
+}
+
+.care-card p,
+.care-stat-card p {
+  color: var(--theme-muted);
+}
+
+.care-card h1,
+.care-card h2,
+.care-card h3,
+.care-stat-card h1,
+.care-stat-card h2,
+.care-stat-card h3,
+.care-stat-card .text-3xl {
+  color: var(--theme-text) !important;
+}
+
+.dark .text-white:not(.gradient-health *):not(.care-btn-primary):not(.care-btn-danger) {
+  color: var(--theme-text) !important;
 }
 
 .gradient-health {
@@ -660,6 +740,20 @@ body,
 .dark .text-red-700 { color: var(--theme-danger) !important; }
 .dark .text-amber-700 { color: var(--theme-warning) !important; }
 .dark .text-blue-700 { color: var(--theme-primary) !important; }
+
+
+
+.dark .min-h-screen.bg-slate-50,
+.dark main.bg-slate-50,
+.dark .relative.min-h-screen.bg-slate-50 {
+  background: var(--theme-bg) !important;
+}
+
+.dark header.bg-white\/90,
+.dark aside.bg-white,
+.dark .bg-white {
+  background-color: var(--theme-surface) !important;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .animated-wave-title span,
