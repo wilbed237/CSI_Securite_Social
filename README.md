@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Care Health - Microservices Spring Boot + React
 
 Application Care Health pour la gestion d'assurance sante : authentification JWT, profils assures/medecins/agents, consultations, prescriptions, feuilles de maladie, remboursements, dashboards et parametres metier.
@@ -362,3 +363,7 @@ Tests backend existants :
 - Les comptes de test medecins historiques ne portent pas encore un lien `auth_user_id` vers les medecins seedes ; les nouveaux comptes crees via inscription sont lies automatiquement.
 - Le client banque reste simule.
 - Java 17 est requis pour Spring Boot 3.
+=======
+# CSI_Securite_Social
+Projet de conception et de création d'une application de sécurité sociale axée Médecine
+>>>>>>> 4c92afcd58630728fdcbaf0ada5c927c173328c0
