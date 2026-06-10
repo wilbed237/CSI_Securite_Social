@@ -1,22 +1,35 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { AuthLayout } from '../layouts/AuthLayout';
-import { AppLayout } from '../layouts/AppLayout';
 import { ProtectedRoute } from './ProtectedRoute';
-import { DashboardPage } from '../pages/DashboardPage';
 import { LandingPage } from '../pages/LandingPage';
-import { LoginPage } from '../pages/auth/LoginPage';
-import { RegisterPage } from '../pages/auth/RegisterPage';
-import { InsuredListPage } from '../pages/insured/InsuredListPage';
-import { InsuredCreatePage } from '../pages/insured/InsuredCreatePage';
-import { InsuredDetailPage } from '../pages/insured/InsuredDetailPage';
-import { DoctorListPage } from '../pages/doctors/DoctorListPage';
-import { DoctorCreatePage } from '../pages/doctors/DoctorCreatePage';
-import { ConsultationCreatePage } from '../pages/medical/ConsultationCreatePage';
-import { PrescriptionPage } from '../pages/medical/PrescriptionPage';
-import { DiseaseSheetPage } from '../pages/medical/DiseaseSheetPage';
-import { ReimbursementPage } from '../pages/reimbursement/ReimbursementPage';
-import { ForbiddenPage } from '../pages/errors/ForbiddenPage';
-import { NotFoundPage } from '../pages/errors/NotFoundPage';
+import {
+  AppLayout,
+  ConsultationCreatePage,
+  ConsultationListPage,
+  ConsultationDetailPage,
+  ConsultationEditPage,
+  DashboardPage,
+  DiseaseSheetPage,
+  DiseaseSheetListPage,
+  DiseaseSheetDetailPage,
+  DiseaseSheetEditPage,
+  DoctorCreatePage,
+  DoctorListPage,
+  ForbiddenPage,
+  InsuredCreatePage,
+  InsuredDetailPage,
+  InsuredListPage,
+  LoginPage,
+  NotFoundPage,
+  PrescriptionPage,
+  PrescriptionListPage,
+  PrescriptionDetailPage,
+  PrescriptionEditPage,
+  RegisterPage,
+  ReimbursementPage,
+  RouteErrorPage,
+  SettingsPage,
+} from './LazyPages';
 
 export const router = createBrowserRouter([
   { path: '/', element: <LandingPage /> },
@@ -30,17 +43,29 @@ export const router = createBrowserRouter([
   {
     path: '/app',
     element: <ProtectedRoute><AppLayout /></ProtectedRoute>,
+    errorElement: <RouteErrorPage />,
     children: [
       { index: true, element: <DashboardPage /> },
       { path: 'insured', element: <InsuredListPage /> },
-      { path: 'insured/new', element: <ProtectedRoute roles={['AGENT']}><InsuredCreatePage /></ProtectedRoute> },
+      { path: 'insured/new', element: <ProtectedRoute roles={['AGENT', 'AGENT_SOCIAL', 'SOCIAL_AGENT', 'SECURITY_AGENT', 'ADMIN']}><InsuredCreatePage /></ProtectedRoute> },
       { path: 'insured/:insuranceNumber', element: <InsuredDetailPage /> },
       { path: 'doctors', element: <DoctorListPage /> },
-      { path: 'doctors/new', element: <ProtectedRoute roles={['AGENT']}><DoctorCreatePage /></ProtectedRoute> },
+      { path: 'doctors/new', element: <ProtectedRoute roles={['AGENT', 'AGENT_SOCIAL', 'SOCIAL_AGENT', 'SECURITY_AGENT', 'ADMIN']}><DoctorCreatePage /></ProtectedRoute> },
+      { path: 'consultations', element: <ConsultationListPage /> },
       { path: 'consultations/new', element: <ProtectedRoute roles={['DOCTOR', 'GENERALIST', 'SPECIALIST']}><ConsultationCreatePage /></ProtectedRoute> },
-      { path: 'ordonnances', element: <ProtectedRoute roles={['DOCTOR', 'GENERALIST', 'SPECIALIST']}><PrescriptionPage /></ProtectedRoute> },
-      { path: 'disease-sheets', element: <DiseaseSheetPage /> },
-      { path: 'reimbursements', element: <ProtectedRoute roles={['AGENT']}><ReimbursementPage /></ProtectedRoute> },
+      { path: 'consultations/:id', element: <ConsultationDetailPage /> },
+      { path: 'consultations/:id/edit', element: <ProtectedRoute roles={['DOCTOR', 'GENERALIST', 'SPECIALIST']}><ConsultationEditPage /></ProtectedRoute> },
+      { path: 'prescriptions', element: <PrescriptionListPage /> },
+      { path: 'prescriptions/new', element: <ProtectedRoute roles={['DOCTOR', 'GENERALIST', 'SPECIALIST']}><PrescriptionPage /></ProtectedRoute> },
+      { path: 'prescriptions/:id', element: <PrescriptionDetailPage /> },
+      { path: 'prescriptions/:id/edit', element: <ProtectedRoute roles={['DOCTOR', 'GENERALIST', 'SPECIALIST']}><PrescriptionEditPage /></ProtectedRoute> },
+      { path: 'ordonnances', element: <Navigate to="/app/prescriptions" replace /> },
+      { path: 'disease-sheets', element: <DiseaseSheetListPage /> },
+      { path: 'disease-sheets/new', element: <ProtectedRoute roles={['DOCTOR', 'GENERALIST', 'SPECIALIST']}><DiseaseSheetPage /></ProtectedRoute> },
+      { path: 'disease-sheets/:id', element: <DiseaseSheetDetailPage /> },
+      { path: 'disease-sheets/:id/edit', element: <DiseaseSheetEditPage /> },
+      { path: 'reimbursements', element: <ProtectedRoute roles={['AGENT', 'AGENT_SOCIAL', 'SOCIAL_AGENT', 'SECURITY_AGENT', 'ADMIN']}><ReimbursementPage /></ProtectedRoute> },
+      { path: 'settings', element: <ProtectedRoute roles={['AGENT', 'ADMIN', 'SOCIAL_AGENT', 'AGENT_SOCIAL', 'SECURITY_AGENT']}><SettingsPage /></ProtectedRoute> },
       { path: '*', element: <Navigate to="/app" replace /> },
     ],
   },

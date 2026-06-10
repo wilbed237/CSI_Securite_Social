@@ -1,0 +1,31 @@
+@startuml
+left to right direction
+actor Agent
+actor Generaliste
+actor Specialiste
+actor Banque
+rectangle "Care Health" {
+  usecase "Gerer les assures" as UC1
+  usecase "Affecter le medecin traitant" as UC2
+  usecase "Enregistrer une consultation" as UC3
+  usecase "Prescrire des medicaments" as UC4
+  usecase "Orienter vers un specialiste" as UC5
+  usecase "Creer et soumettre une feuille" as UC6
+  usecase "Controler un remboursement" as UC7
+  usecase "Executer le paiement" as UC8
+  usecase "Generer PDF et recu" as UC9
+}
+Agent --> UC1
+Agent --> UC2
+Agent --> UC7
+Agent --> UC8
+Agent --> UC9
+Generaliste --> UC3
+Generaliste --> UC4
+Generaliste --> UC5
+Generaliste --> UC6
+Specialiste --> UC3
+Specialiste --> UC4
+Specialiste --> UC6
+Banque --> UC8
+@enduml

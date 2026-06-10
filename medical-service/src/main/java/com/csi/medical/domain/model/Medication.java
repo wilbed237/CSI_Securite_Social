@@ -26,6 +26,12 @@ public class Medication {
     @Column(nullable = false, length = 240)
     private String posology;
 
+    @Column(length = 120) private String frequency;
+    @Column(length = 120) private String duration;
+    private Integer quantity;
+    @Column(length = 500) private String instructions;
+    @Column(name = "administration_route", length = 120) private String administrationRoute;
+
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "prescription_id", nullable = false)
     private Prescription prescription;

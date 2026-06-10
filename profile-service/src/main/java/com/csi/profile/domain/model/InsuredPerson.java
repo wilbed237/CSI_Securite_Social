@@ -3,6 +3,7 @@ package com.csi.profile.domain.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -45,6 +46,18 @@ public class InsuredPerson {
     @Column(length = 160)
     private String email;
 
+    @Column(name = "country_code", nullable = false, length = 2)
+    @Builder.Default
+    private String countryCode = "CM";
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "preferred_payment_type", nullable = false, length = 30)
+    @Builder.Default
+    private PaymentPreference preferredPaymentType = PaymentPreference.CASH;
+
+    @Column(name = "bank_account_encrypted", length = 1000)
+    private String bankAccountEncrypted;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
     @Builder.Default
@@ -53,4 +66,8 @@ public class InsuredPerson {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "treating_doctor_id")
     private Doctor treatingDoctor;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @Builder.Default
+    private Instant createdAt = Instant.now();
 }

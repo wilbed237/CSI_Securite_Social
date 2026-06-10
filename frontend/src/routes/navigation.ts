@@ -1,21 +1,22 @@
-import { ClipboardPlus, CreditCard, FileText, Home, Pill, Stethoscope, UserPlus, Users } from 'lucide-react';
+import { ClipboardPlus, CreditCard, FileText, Home, Pill, Settings, Stethoscope, UserPlus, Users } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import type { RoleName } from '../types/api';
 
 export interface NavigationItem {
-  label: string;
+  labelKey: string;
   to: string;
   icon: LucideIcon;
   roles?: RoleName[];
 }
 
 export const navigationItems: NavigationItem[] = [
-  { label: 'Tableau de bord médical', to: '/app', icon: Home },
-  { label: 'Patients couverts', to: '/app/insured', icon: Users, roles: ['AGENT', 'DOCTOR', 'GENERALIST', 'SPECIALIST'] },
-  { label: 'Nouveau patient couvert', to: '/app/insured/new', icon: UserPlus, roles: ['AGENT'] },
-  { label: 'Médecins', to: '/app/doctors', icon: Stethoscope, roles: ['AGENT', 'DOCTOR', 'GENERALIST', 'SPECIALIST'] },
-  { label: 'Consultation', to: '/app/consultations/new', icon: ClipboardPlus, roles: ['DOCTOR', 'GENERALIST', 'SPECIALIST'] },
-  { label: 'Ordonnances', to: '/app/ordonnances', icon: Pill, roles: ['DOCTOR', 'GENERALIST', 'SPECIALIST'] },
-  { label: 'Feuilles de soins', to: '/app/disease-sheets', icon: FileText, roles: ['AGENT', 'DOCTOR', 'GENERALIST', 'SPECIALIST'] },
-  { label: 'Prises en charge', to: '/app/reimbursements', icon: CreditCard, roles: ['AGENT'] },
+  { labelKey: 'nav.dashboard', to: '/app', icon: Home },
+  { labelKey: 'nav.patients', to: '/app/insured', icon: Users, roles: ['AGENT', 'DOCTOR', 'GENERALIST', 'SPECIALIST'] },
+  { labelKey: 'nav.newPatient', to: '/app/insured/new', icon: UserPlus, roles: ['AGENT'] },
+  { labelKey: 'nav.doctors', to: '/app/doctors', icon: Stethoscope, roles: ['AGENT', 'DOCTOR', 'GENERALIST', 'SPECIALIST'] },
+  { labelKey: 'nav.consultation', to: '/app/consultations', icon: ClipboardPlus, roles: ['AGENT', 'AGENT_SOCIAL', 'SOCIAL_AGENT', 'SECURITY_AGENT', 'DOCTOR', 'GENERALIST', 'SPECIALIST'] },
+  { labelKey: 'nav.prescriptions', to: '/app/prescriptions', icon: Pill, roles: ['AGENT', 'AGENT_SOCIAL', 'SOCIAL_AGENT', 'SECURITY_AGENT', 'DOCTOR', 'GENERALIST', 'SPECIALIST'] },
+  { labelKey: 'nav.sheets', to: '/app/disease-sheets', icon: FileText, roles: ['AGENT', 'AGENT_SOCIAL', 'SOCIAL_AGENT', 'SECURITY_AGENT', 'DOCTOR', 'GENERALIST', 'SPECIALIST'] },
+  { labelKey: 'nav.reimbursements', to: '/app/reimbursements', icon: CreditCard, roles: ['AGENT'] },
+  { labelKey: 'nav.settings', to: '/app/settings', icon: Settings, roles: ['AGENT', 'ADMIN', 'SOCIAL_AGENT', 'AGENT_SOCIAL', 'SECURITY_AGENT'] },
 ];

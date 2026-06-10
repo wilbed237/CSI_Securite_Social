@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Lock, Mail } from 'lucide-react';
+import { Lock, Mail, Eye, EyeOff } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
@@ -11,6 +11,7 @@ import { Card } from '../../components/ui/Card';
 import { Input } from '../../components/ui/Input';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAuthStore } from '../../store/authStore';
+import { useState } from 'react';
 
 const schema = z.object({ identifier: z.string().min(1, 'Email, téléphone ou utilisateur requis'), password: z.string().min(1, 'Mot de passe requis') });
 type FormValues = z.infer<typeof schema>;
@@ -21,7 +22,8 @@ export function LoginPage() {
   const location = useLocation();
   const token = useAuthStore((state) => state.accessToken);
   const setSession = useAuthStore((state) => state.setSession);
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormValues>({ resolver: zodResolver(schema), defaultValues: { identifier: 'agent.csi', password: 'Password123!' } });
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormValues>({ resolver: zodResolver(schema) });
+  const [showPassword, setShowPassword] = useState(false);
   if (token) return <Navigate to="/app" replace />;
 
   const onSubmit = async (values: FormValues) => {
@@ -36,16 +38,58 @@ export function LoginPage() {
     }
   };
 
+  /*return (
+   <Card className="w-full max-w-md">
+      <h1 className="text-2xl font-black text-slate-950">Connexion</h1>
+      <p className="mt-2 text-sm text-slate-500">Accédez à votre espace agent ou médecin.</p>
+      <form className="mt-6 space-y-4" onSubmit={handleSubmit(onSubmit)}>
+        <Input label="Identifiant" icon={<Mail className="h-4 w-4" />} error={errors.identifier?.message} placeholder="Nom d'utilisateur" />
+        <Input label="Mot de passe" type="password" icon={<Lock className="h-4 w-4" />} error={errors.password?.message} placeholder="Mot de passe" autoComplete="current-password" />
+        <Button className="w-full" isLoading={isSubmitting}>Se connecter</Button>
+      </form>
+      <p className="mt-5 text-center text-sm text-slate-500">Pas encore de compte ? <Link className="font-semibold text-primary-700" to="/register">Créer un utilisateur</Link></p>
+    </Card>
+  );
+  */
   return (
     <Card className="w-full max-w-md">
       <h1 className="text-2xl font-black text-slate-950">Connexion</h1>
       <p className="mt-2 text-sm text-slate-500">Accédez à votre espace agent ou médecin.</p>
       <form className="mt-6 space-y-4" onSubmit={handleSubmit(onSubmit)}>
-        <Input label="Identifiant" icon={<Mail className="h-4 w-4" />} error={errors.identifier?.message} required {...register('identifier')} />
-        <Input label="Mot de passe" type="password" icon={<Lock className="h-4 w-4" />} error={errors.password?.message} required {...register('password')} />
+        <Input
+          label="Identifiant"
+          icon={<Mail className="h-4 w-4" />}
+          error={errors.identifier?.message}
+          placeholder="Nom d'utilisateur"
+          {...register("identifier")} // N'oubliez pas le register si vous utilisez react-hook-form
+        />
+
+        <div className="relative">
+          <Input
+            label="Mot de passe"
+            type={showPassword ? "text" : "password"} // Bascule dynamiquement le type
+            icon={<Lock className="h-4 w-4" />}
+            error={errors.password?.message}
+            placeholder="Mot de passe"
+            autoComplete="current-password"
+            {...register("password")}
+          />
+          {/* Bouton pour afficher/masquer le mot de passe */}
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-[38px] text-slate-400 hover:text-slate-600 focus:outline-none"
+            aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+          >
+            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          </button>
+        </div>
+
         <Button className="w-full" isLoading={isSubmitting}>Se connecter</Button>
       </form>
-      <p className="mt-5 text-center text-sm text-slate-500">Pas encore de compte ? <Link className="font-semibold text-primary-700" to="/register">Créer un utilisateur</Link></p>
+      <p className="mt-5 text-center text-sm text-slate-500">
+        Pas encore de compte ? <Link className="font-semibold text-primary-700" to="/register">Créer un utilisateur</Link>
+      </p>
     </Card>
   );
 }

@@ -18,6 +18,10 @@ security:
     secret: ${JWT_SECRET:change-me-change-me-change-me-change-me-256-bit-secret}
     access-token-expiration-seconds: ${JWT_ACCESS_EXPIRATION:3600}
     refresh-token-expiration-seconds: ${JWT_REFRESH_EXPIRATION:604800}
+clients:
+  profile-service-url: ${PROFILE_SERVICE_URL:http://localhost:8082}
+internal:
+  profile-service-secret: ${INTERNAL_SERVICE_SECRET:dev-internal-secret}
 eureka:
   client:
     service-url:

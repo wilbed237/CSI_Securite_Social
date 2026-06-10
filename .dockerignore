@@ -1,6 +1,8 @@
 # Git et sorties locales inutiles dans le contexte Docker
 .git
 **/target
+!**/target/*.jar
+**/target/*.jar.original
 **/node_modules
 **/dist
 .mvn/apache-maven-*

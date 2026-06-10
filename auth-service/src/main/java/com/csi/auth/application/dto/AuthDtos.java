@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 
 import java.util.Set;
 import java.util.UUID;
+import java.time.Instant;
 
 /**
  * Regroupe les DTO d entree et de sortie du service d authentification.
@@ -23,8 +24,13 @@ public final class AuthDtos {
             @NotBlank @Email @Size(max = 160) String email,
             @Size(max = 40) String phoneNumber,
             @NotBlank @Size(min = 8, max = 100) String password,
-            @NotEmpty Set<RoleName> roles) {}
+            @NotEmpty Set<RoleName> roles,
+            @Size(max = 40) String actorType,
+            @Size(max = 40) String doctorType,
+            @Size(max = 120) String specialty,
+            @Size(max = 80) String firstName,
+            @Size(max = 80) String lastName) {}
 
     public record AuthResponse(String accessToken, String refreshToken, String tokenType, long expiresInSeconds, UserResponse user) {}
-    public record UserResponse(UUID id, String username, String email, String phoneNumber, Set<RoleName> roles, boolean enabled) {}
+    public record UserResponse(UUID id, String username, String email, String phoneNumber, Set<RoleName> roles, boolean enabled, Instant lastLoginAt) {}
 }

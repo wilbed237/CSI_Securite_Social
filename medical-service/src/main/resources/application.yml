@@ -11,13 +11,22 @@ spring:
     hibernate:
       ddl-auto: validate
     open-in-view: false
+    properties:
+      hibernate:
+        default_batch_fetch_size: 50
   flyway:
     enabled: true
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
 security:
   jwt:
     secret: ${JWT_SECRET:change-me-change-me-change-me-change-me-256-bit-secret}
 clients:
   profile-service-url: ${PROFILE_SERVICE_URL:http://localhost:8082}
+  reimbursement-service-url: ${REIMBURSEMENT_SERVICE_URL:http://localhost:8084}
 eureka:
   client:
     service-url:

@@ -16,6 +16,9 @@ spring:
 security:
   jwt:
     secret: ${JWT_SECRET:change-me-change-me-change-me-change-me-256-bit-secret}
+  sensitive-data-key: ${SENSITIVE_DATA_KEY:change-me-sensitive-data-key-for-development}
+internal:
+  auth-service-secret: ${INTERNAL_SERVICE_SECRET:dev-internal-secret}
 eureka:
   client:
     service-url:

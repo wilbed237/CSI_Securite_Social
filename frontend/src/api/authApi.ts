@@ -2,7 +2,18 @@ import { apiClient } from './httpClient';
 import type { ApiResponse, AuthResponse, RoleName, UserResponse } from '../types/api';
 
 export interface LoginPayload { identifier: string; password: string }
-export interface RegisterPayload { username: string; email: string; phoneNumber?: string; password: string; roles: RoleName[] }
+export interface RegisterPayload {
+  username: string;
+  email: string;
+  phoneNumber?: string;
+  password: string;
+  roles: RoleName[];
+  actorType?: 'SOCIAL_AGENT' | 'DOCTOR';
+  doctorType?: 'GENERALIST' | 'SPECIALIST';
+  specialty?: string;
+  firstName?: string;
+  lastName?: string;
+}
 
 export const authApi = {
   async login(payload: LoginPayload) {

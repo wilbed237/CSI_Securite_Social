@@ -9,11 +9,13 @@ import { ThemeToggle } from '../components/ThemeToggle';
 import { CareHealthLogo } from '../components/brand/CareHealthLogo';
 import { PageTransition } from '../components/PageTransition';
 import { cn } from '../utils/cn';
+import { useTranslation } from '../i18n';
 
 export function AppLayout() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const { user, clearSession, hasAnyRole } = useAuthStore();
+  const { t } = useTranslation();
   const visibleItems = navigationItems.filter((item) => !item.roles || hasAnyRole(item.roles));
 
   const logout = () => {
@@ -27,7 +29,9 @@ export function AppLayout() {
         <div className="flex h-full flex-col p-5">
           <div className="flex items-center justify-between">
             <CareHealthLogo compact={false} className="text-slate-950" />
-            <button className="lg:hidden" onClick={() => setOpen(false)} aria-label="Fermer le menu"><X /></button>
+            <button className="lg:hidden" onClick={() => setOpen(false)} aria-label={t('layout.menu.close')}>
+              <X />
+            </button>
           </div>
           <nav className="mt-8 space-y-1">
             {visibleItems.map((item) => (
@@ -36,36 +40,60 @@ export function AppLayout() {
                 to={item.to}
                 end={item.to === '/app'}
                 onClick={() => setOpen(false)}
-                className={({ isActive }) => cn(
-                  'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-950',
-                  isActive && 'bg-primary-50 text-primary-700',
-                )}
+                className={({ isActive }) =>
+                  cn(
+                    'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-950',
+                    isActive && 'bg-primary-50 text-primary-700',
+                  )
+                }
               >
                 <item.icon className="h-5 w-5" />
-                {item.label}
+                {t(item.labelKey)}
               </NavLink>
             ))}
           </nav>
           <div className="care-user-panel mt-auto rounded-2xl p-4">
             <p className="care-user-name text-sm font-bold">{user?.username}</p>
             <p className="care-user-email truncate text-xs">{user?.email}</p>
-            <div className="mt-3 flex flex-wrap gap-1.5">{user?.roles.map((role) => <Badge key={role} tone="primary">{role}</Badge>)}</div>
-            <Button className="care-user-logout mt-4 w-full" variant="secondary" icon={<LogOut className="h-4 w-4" />} onClick={logout}>Déconnexion</Button>
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {user?.roles.map((role) => (
+                <Badge key={role} tone="primary">
+                  {t(`technical.${role}`, role)}
+                </Badge>
+              ))}
+            </div>
+            <Button
+              className="care-user-logout mt-4 w-full"
+              variant="secondary"
+              icon={<LogOut className="h-4 w-4" />}
+              onClick={logout}
+            >
+              {t('common.logout')}
+            </Button>
           </div>
         </div>
       </aside>
-      {open && <div className="fixed inset-0 z-30 bg-slate-950/40 lg:hidden" onClick={() => setOpen(false)} />}
+
+      {open && (
+        <div className="fixed inset-0 z-30 bg-slate-950/40 lg:hidden" onClick={() => setOpen(false)} />
+      )}
+
       <div className="min-w-0">
         <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/90 px-4 py-3 backdrop-blur lg:px-8">
           <div className="flex items-center justify-between gap-4">
-            <button className="rounded-xl border border-slate-200 p-2 lg:hidden" onClick={() => setOpen(true)} aria-label="Ouvrir le menu"><Menu className="h-5 w-5" /></button>
+            <button
+              className="rounded-xl border border-slate-200 p-2 lg:hidden"
+              onClick={() => setOpen(true)}
+              aria-label={t('layout.menu.open')}
+            >
+              <Menu className="h-5 w-5" />
+            </button>
             <div>
-              <p className="text-sm text-slate-500">Console clinique</p>
-              <h1 className="text-xl font-black text-slate-950">Centre de coordination médicale</h1>
+              <p className="text-sm text-slate-500">{t('layout.header.subtitle')}</p>
+              <h1 className="text-xl font-black text-slate-950">{t('layout.header.title')}</h1>
             </div>
             <div className="flex items-center gap-2">
               <ThemeToggle className="border-slate-200 bg-white text-slate-700 hover:bg-slate-100" />
-              <Badge tone="success">JWT actif</Badge>
             </div>
           </div>
         </header>

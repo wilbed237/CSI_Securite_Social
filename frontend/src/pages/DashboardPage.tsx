@@ -1,34 +1,36 @@
-import { Activity, ClipboardList, Stethoscope, WalletCards } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useMemo, useState } from 'react';
 import { PageHeader } from '../components/PageHeader';
-import { RoleGate } from '../components/RoleGate';
 import { Button } from '../components/ui/Button';
-import { Card, CardHeader } from '../components/ui/Card';
-import { StatCard } from '../components/ui/StatCard';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useAuthStore } from '../store/authStore';
+import { AgentSocialDashboard } from './dashboard/AgentSocialDashboard';
+import { DoctorDashboard } from './dashboard/DoctorDashboard';
+
+type DashboardView = 'agent' | 'doctor';
 
 export function DashboardPage() {
-  usePageTitle('Tableau de bord médical');
+  usePageTitle('Tableau de bord');
   const user = useAuthStore((state) => state.user);
+  const roles = user?.roles ?? [];
+  const canSeeAgent = roles.some((role) => ['AGENT', 'ADMIN', 'SOCIAL_AGENT', 'AGENT_SOCIAL', 'SECURITY_AGENT'].includes(role));
+  const canSeeDoctor = roles.some((role) => ['DOCTOR', 'GENERALIST', 'SPECIALIST'].includes(role));
+  const defaultView = useMemo<DashboardView>(() => (canSeeAgent ? 'agent' : 'doctor'), [canSeeAgent]);
+  const [view, setView] = useState<DashboardView>(defaultView);
+  const activeView = view === 'agent' && canSeeAgent ? 'agent' : canSeeDoctor ? 'doctor' : 'agent';
+
   return (
     <div>
-      <PageHeader title={`Bonjour ${user?.username ?? ''}`} description="Vue d'ensemble des modules cliniques disponibles selon votre rôle." />
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <StatCard title="Patients couverts" value="ASS-0001" description="Dossier patient de référence disponible pour les essais." icon={<Activity className="h-6 w-6" />} />
-        <StatCard title="Médecins" value="2" description="Généraliste et spécialiste de démonstration." icon={<Stethoscope className="h-6 w-6" />} />
-        <StatCard title="Feuilles de soins" value="FM" description="Créer après une consultation validée." icon={<ClipboardList className="h-6 w-6" />} />
-        <StatCard title="Prise en charge" value="100/80%" description="Calcul selon le parcours de soins." icon={<WalletCards className="h-6 w-6" />} />
-      </div>
-      <Card className="mt-6">
-        <CardHeader title="Actions rapides" description="Accès direct aux gestes métier les plus fréquents." />
-        <div className="flex flex-wrap gap-3">
-          <RoleGate roles={['AGENT']}><Link to="/app/insured/new"><Button>Inscrire un patient couvert</Button></Link></RoleGate>
-          <RoleGate roles={['DOCTOR', 'GENERALIST', 'SPECIALIST']}><Link to="/app/consultations/new"><Button>Créer la consultation</Button></Link></RoleGate>
-          <RoleGate roles={['DOCTOR', 'GENERALIST', 'SPECIALIST']}><Link to="/app/ordonnances"><Button variant="secondary">Enregistrer une ordonnance</Button></Link></RoleGate>
-          <RoleGate roles={['AGENT']}><Link to="/app/reimbursements"><Button variant="secondary">Valider une prise en charge</Button></Link></RoleGate>
-        </div>
-      </Card>
+      <PageHeader
+        title={`Bonjour ${user?.username ?? ''}`}
+        description="Vue d'ensemble des indicateurs opérationnels selon votre rôle."
+        action={canSeeAgent && canSeeDoctor ? (
+          <div className="flex rounded-xl border border-slate-200 bg-white p-1">
+            <Button variant={activeView === 'agent' ? 'primary' : 'ghost'} onClick={() => setView('agent')}>Agent</Button>
+            <Button variant={activeView === 'doctor' ? 'primary' : 'ghost'} onClick={() => setView('doctor')}>Médecin</Button>
+          </div>
+        ) : undefined}
+      />
+      {activeView === 'agent' && canSeeAgent ? <AgentSocialDashboard /> : <DoctorDashboard />}
     </div>
   );
 }

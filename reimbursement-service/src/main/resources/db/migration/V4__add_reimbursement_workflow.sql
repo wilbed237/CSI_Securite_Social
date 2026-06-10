@@ -1,0 +1,18 @@
+ALTER TABLE reimbursements DROP CONSTRAINT IF EXISTS ck_reimbursement_status;
+ALTER TABLE reimbursements ADD CONSTRAINT ck_reimbursement_status CHECK (status IN ('PENDING','APPROVED','EXECUTED','REJECTED'));
+ALTER TABLE reimbursements DROP CONSTRAINT IF EXISTS ck_bank_iban_for_transfer;
+ALTER TABLE reimbursements ADD COLUMN bank_iban_encrypted VARCHAR(600);
+ALTER TABLE reimbursements ADD COLUMN eligible_amount NUMERIC(12,2);
+ALTER TABLE reimbursements ADD COLUMN rule_code VARCHAR(80);
+ALTER TABLE reimbursements ADD COLUMN calculated_at TIMESTAMP WITH TIME ZONE;
+ALTER TABLE reimbursements ADD COLUMN approved_by_user_id UUID;
+ALTER TABLE reimbursements ADD COLUMN approved_at TIMESTAMP WITH TIME ZONE;
+ALTER TABLE reimbursements ADD COLUMN rejection_reason VARCHAR(1000);
+ALTER TABLE reimbursements ADD COLUMN payment_reference VARCHAR(120);
+ALTER TABLE reimbursements ADD COLUMN idempotency_key VARCHAR(100);
+UPDATE reimbursements SET eligible_amount = base_amount, rule_code = 'LEGACY', calculated_at = created_at WHERE eligible_amount IS NULL;
+ALTER TABLE reimbursements ALTER COLUMN eligible_amount SET NOT NULL;
+ALTER TABLE reimbursements ALTER COLUMN rule_code SET NOT NULL;
+ALTER TABLE reimbursements ALTER COLUMN calculated_at SET NOT NULL;
+ALTER TABLE reimbursements DROP COLUMN bank_iban;
+CREATE UNIQUE INDEX uk_reimbursement_idempotency_key ON reimbursements(idempotency_key) WHERE idempotency_key IS NOT NULL;

@@ -1,5 +1,6 @@
 import { AlertCircle } from 'lucide-react';
 import { Button } from './Button';
+import { useTranslation } from '../../i18n';
 
 interface ConfirmModalProps {
   open: boolean;
@@ -11,6 +12,7 @@ interface ConfirmModalProps {
 }
 
 export function ConfirmModal({ open, title, message, confirmLabel = 'Confirmer', onConfirm, onClose }: ConfirmModalProps) {
+  const { t } = useTranslation();
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4">
@@ -23,8 +25,8 @@ export function ConfirmModal({ open, title, message, confirmLabel = 'Confirmer',
           </div>
         </div>
         <div className="mt-6 flex justify-end gap-3">
-          <Button type="button" variant="ghost" onClick={onClose}>Annuler</Button>
-          <Button type="button" variant="danger" onClick={onConfirm}>{confirmLabel}</Button>
+          <Button type="button" variant="ghost" onClick={onClose}>{t('common.cancel', 'Annuler')}</Button>
+          <Button type="button" variant="danger" onClick={onConfirm}>{confirmLabel === 'Confirmer' ? t('common.confirm', 'Confirmer') : confirmLabel}</Button>
         </div>
       </div>
     </div>

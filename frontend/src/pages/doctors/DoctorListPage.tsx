@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { Plus, Search } from 'lucide-react';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { profileApi } from '../../api/profileApi';
 import { extractApiError } from '../../api/httpClient';
 import { PageHeader } from '../../components/PageHeader';
@@ -11,19 +10,24 @@ import { Button } from '../../components/ui/Button';
 import { DataTable } from '../../components/ui/Table';
 import { ErrorState } from '../../components/ui/ErrorState';
 import { Loader } from '../../components/ui/Loader';
+import { Input } from '../../components/ui/Input';
 import { Select } from '../../components/ui/Select';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import type { DoctorType } from '../../types/api';
 
 export function DoctorListPage() {
   usePageTitle('Médecins');
-  const [type, setType] = useState<DoctorType | ''>('');
-  const query = useQuery({ queryKey: ['doctors', type], queryFn: () => profileApi.listDoctors({ type: type || undefined, page: 0, size: 20 }) });
+  const [params, setParams] = useSearchParams();
+  const type = (params.get('type') as DoctorType) || '';
+  const active = params.get('active') ?? '';
+  const specialty = params.get('specialty') ?? '';
+  const query = useQuery({ queryKey: ['doctors', type, active, specialty], queryFn: () => profileApi.listDoctors({ type: type || undefined, active: active === '' ? undefined : active === 'true', specialty: specialty || undefined, page: 0, size: 50 }) });
+  const setFilter = (key: string, value: string) => { const next = new URLSearchParams(params); if (value) next.set(key, value); else next.delete(key); setParams(next, { replace: true }); };
 
   return (
     <div>
-      <PageHeader title="Médecins" description="Annuaire des médecins généralistes et spécialistes enregistrés." action={<RoleGate roles={['AGENT']}><Link to="/app/doctors/new"><Button icon={<Plus className="h-4 w-4" />}>Nouveau médecin</Button></Link></RoleGate>} />
-      <div className="mb-4 max-w-xs"><Select label="Filtrer par type" value={type} onChange={(e) => setType(e.target.value as DoctorType | '')} options={[{ label: 'Tous', value: '' }, { label: 'Généralistes', value: 'GENERALIST' }, { label: 'Spécialistes', value: 'SPECIALIST' }]} /></div>
+      <PageHeader title="Médecins" description="Annuaire des médecins généralistes et spécialistes enregistrés." action={<RoleGate roles={['AGENT', 'AGENT_SOCIAL', 'SOCIAL_AGENT', 'SECURITY_AGENT', 'ADMIN']}><Link to="/app/doctors/new"><Button icon={<Plus className="h-4 w-4" />}>Nouveau médecin</Button></Link></RoleGate>} />
+      <div className="mb-4 grid gap-3 md:grid-cols-3"><Select label="Type" value={type} onChange={(e) => setFilter('type', e.target.value)} options={[{ label: 'Tous', value: '' }, { label: 'Généralistes', value: 'GENERALIST' }, { label: 'Spécialistes', value: 'SPECIALIST' }]} /><Select label="Service" value={active} onChange={(e) => setFilter('active', e.target.value)} options={[{ label: 'Tous', value: '' }, { label: 'En service', value: 'true' }, { label: 'Hors service', value: 'false' }]} /><Input label="Spécialité" value={specialty} onChange={(e) => setFilter('specialty', e.target.value)} /></div>
       {query.isLoading && <Loader />}
       {query.isError && <ErrorState message={extractApiError(query.error)} />}
       {query.data && (

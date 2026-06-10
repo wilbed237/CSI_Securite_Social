@@ -3,6 +3,7 @@ package com.csi.profile.domain.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.Instant;
 import java.util.UUID;
 
 /**
@@ -22,6 +23,9 @@ public class Doctor {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column(name = "auth_user_id")
+    private UUID authUserId;
 
     @Column(nullable = false, length = 80)
     private String firstName;
@@ -44,4 +48,12 @@ public class Doctor {
 
     @Column(length = 160)
     private String email;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean active = true;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @Builder.Default
+    private Instant createdAt = Instant.now();
 }

@@ -1,0 +1,26 @@
+@startuml
+class UserAccount
+class InsuredPerson
+class Doctor
+class SocialAgent
+class PrimaryDoctorAssignment
+class Consultation
+class Prescription
+class Medication
+class SpecialistReferral
+class DiseaseSheet
+class Reimbursement
+class AuditEvent
+
+UserAccount "1" -- "0..1" Doctor : authUserId
+UserAccount "1" -- "0..1" SocialAgent : authUserId
+InsuredPerson "1" -- "0..*" PrimaryDoctorAssignment
+Doctor "1" -- "0..*" PrimaryDoctorAssignment
+InsuredPerson "1" -- "0..*" Consultation
+Doctor "1" -- "0..*" Consultation
+Consultation "1" -- "0..*" Prescription
+Prescription "1" -- "0..*" Medication
+Consultation "1" -- "0..*" SpecialistReferral
+Consultation "1" -- "0..1" DiseaseSheet
+DiseaseSheet "1" -- "0..1" Reimbursement
+@enduml

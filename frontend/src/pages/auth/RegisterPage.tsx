@@ -14,10 +14,17 @@ import type { RoleName } from '../../types/api';
 
 const schema = z.object({
   username: z.string().min(3, 'Nom utilisateur trop court'),
+  firstName: z.string().min(1, 'Prénom requis'),
+  lastName: z.string().min(1, 'Nom requis'),
   email: z.string().email('Email invalide'),
   phoneNumber: z.string().optional(),
   password: z.string().min(8, '8 caractères minimum'),
   role: z.enum(['AGENT', 'GENERALIST', 'SPECIALIST']),
+  specialty: z.string().optional(),
+}).superRefine((value, ctx) => {
+  if (value.role === 'SPECIALIST' && !value.specialty) {
+    ctx.addIssue({ code: 'custom', path: ['specialty'], message: 'Spécialité obligatoire pour un spécialiste' });
+  }
 });
 type FormValues = z.infer<typeof schema>;
 
@@ -36,7 +43,18 @@ export function RegisterPage() {
 
   const onSubmit = async (values: FormValues) => {
     try {
-      await authApi.register({ username: values.username, email: values.email, phoneNumber: values.phoneNumber, password: values.password, roles: rolesFromSelection(values.role) });
+      await authApi.register({
+        username: values.username,
+        email: values.email,
+        phoneNumber: values.phoneNumber,
+        password: values.password,
+        roles: rolesFromSelection(values.role),
+        actorType: values.role === 'AGENT' ? 'SOCIAL_AGENT' : 'DOCTOR',
+        doctorType: values.role === 'AGENT' ? undefined : values.role,
+        specialty: values.role === 'SPECIALIST' ? values.specialty : undefined,
+        firstName: values.firstName,
+        lastName: values.lastName,
+      });
       toast.success('Utilisateur créé. Vous pouvez vous connecter.');
       navigate('/login');
     } catch (error) {
@@ -50,9 +68,12 @@ export function RegisterPage() {
       <p className="mt-2 text-sm text-slate-500">Endpoint backend prévu pour ajouter des comptes applicatifs.</p>
       <form className="mt-6 grid gap-4 sm:grid-cols-2" onSubmit={handleSubmit(onSubmit)}>
         <Input label="Nom utilisateur" required error={errors.username?.message} {...register('username')} />
+        <Input label="Prénom" required error={errors.firstName?.message} {...register('firstName')} />
+        <Input label="Nom" required error={errors.lastName?.message} {...register('lastName')} />
         <Input label="Email" type="email" required error={errors.email?.message} {...register('email')} />
         <Input label="Téléphone" error={errors.phoneNumber?.message} {...register('phoneNumber')} />
         <Select label="Profil" required options={roleOptions} error={errors.role?.message} {...register('role')} />
+        <Input label="Spécialité" error={errors.specialty?.message} {...register('specialty')} />
         <Input className="sm:col-span-2" label="Mot de passe" type="password" required error={errors.password?.message} {...register('password')} />
         <Button className="sm:col-span-2" isLoading={isSubmitting}>Créer le profil de soins</Button>
       </form>

@@ -5,6 +5,9 @@ package com.csi.auth.domain.model;
  */
 public enum RoleName {
     AGENT,
+    SOCIAL_AGENT,
+    AGENT_SOCIAL,
+    SECURITY_AGENT,
     DOCTOR,
     GENERALIST,
     SPECIALIST,

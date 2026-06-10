@@ -1,163 +1,272 @@
-# CSI Backend - Microservices Spring Boot
+# Care Health - Microservices Spring Boot + React
 
-Backend Java Spring Boot 3 / Java 17 pour le cahier de charges `csi.pdf`.
+Application Care Health pour la gestion d'assurance sante : authentification JWT, profils assures/medecins/agents, consultations, prescriptions, feuilles de maladie, remboursements, dashboards et parametres metier.
 
-## 1. Analyse technique de `csi.pdf`
-
-### Acteurs
-- **Agent de securite sociale** : acteur principal cote organisme. Il inscrit les assures, enregistre le medecin traitant et traite les remboursements.
-- **Medecin** : acteur principal. Il peut etre generaliste ou specialiste. Il enregistre les feuilles de maladie et prescrit des medicaments. Le generaliste peut orienter vers un specialiste.
-- **Banque** : acteur secondaire, sollicite uniquement pour les remboursements par virement.
-- **Assure / patient** : entite metier centrale mais pas acteur direct de l'application d'apres le document.
-
-### Cas d'utilisation
-1. S'authentifier.
-2. Inscrire un assure.
-3. Enregistrer un medecin traitant pour un assure.
-4. Enregistrer une consultation.
-5. Prescrire des medicaments.
-6. Prescrire une consultation vers un specialiste.
-7. Enregistrer une feuille de maladie.
-8. Effectuer un remboursement.
-
-### Entites metier
-- Personne, Assure, Medecin, Generaliste, Specialiste.
-- Consultation.
-- Prescription, Prescription medicamenteuse, Prescription de consultation specialiste.
-- Medicament.
-- Feuille de maladie.
-- Remboursement.
-- Utilisateur applicatif, roles et refresh token.
-
-### Regles metier extraites
-- Toute fonctionnalite metier necessite authentification.
-- Un medecin est soit generaliste, soit specialiste, jamais les deux.
-- Un specialiste doit avoir une specialite ; un generaliste n'en porte pas.
-- Un assure peut avoir zero ou un medecin traitant.
-- Le medecin traitant doit etre un generaliste.
-- Une prescription medicale necessite un patient inscrit comme assure actif.
-- Seul un generaliste peut prescrire une consultation chez un specialiste.
-- Une feuille de maladie documente une consultation et sert de base au remboursement.
-- Une feuille de maladie ne peut etre remboursee qu'une seule fois.
-- Remboursement : 100% si consultation generaliste, 80% si specialiste.
-- Le paiement peut etre en especes ou par virement ; un virement exige un IBAN.
-
-### Modules mobiles necessitant des API
-- Connexion / renouvellement de session.
-- Tableau de bord agent.
-- Inscription et consultation des assures.
-- Gestion des medecins et medecin traitant.
-- Tableau de bord medecin.
-- Consultations et prescriptions.
-- Feuilles de maladie.
-- Remboursements.
-
-### Contraintes fonctionnelles et non fonctionnelles
-- API REST versionnees `/api/v1`.
-- Controle d'acces par roles.
-- Validation stricte des entrees.
-- Tracabilite via identifiants uniques metier.
-- Separation des bases par microservice.
-- Swagger/OpenAPI par service.
-- Migrations Flyway.
-- Docker Compose pour lancer l'architecture.
-
-## 2. Architecture microservices cible
+## Architecture
 
 ```text
-Application mobile
-      |
-      v
-API Gateway :8080
-      |
-      +--> auth-service :8081 ---- auth-db
-      +--> profile-service :8082 ---- profile-db
-      |       |-- assures
-      |       |-- medecins
-      |       |-- medecin traitant
-      |
-      +--> medical-service :8083 ---- medical-db
-      |       |-- consultations
-      |       |-- prescriptions
-      |       |-- feuilles de maladie
-      |       +-- REST --> profile-service (verification assure actif)
-      |
-      +--> reimbursement-service :8084 ---- reimbursement-db
-              |-- remboursements
-              +-- REST --> medical-service (feuille de maladie)
-              +-- stub --> banque
-
-Discovery service Eureka :8761
+frontend React/Vite :5173
+        |
+        v
+api-gateway :8080
+        |
+        +-- auth-service :8081 ------------ auth-db
+        +-- profile-service :8082 --------- profile-db
+        +-- medical-service :8083 --------- medical-db
+        +-- reimbursement-service :8084 --- reimbursement-db
+        +-- discovery-service :8761
 ```
 
-## 3. Microservices et responsabilites
+Modules Maven :
+- `common` : exceptions, DTO communs, securite JWT partagee.
+- `auth-service` : comptes, roles, login, refresh tokens, JWT.
+- `profile-service` : assures, medecins, agents sociaux, parametres, statistiques profils.
+- `medical-service` : consultations, prescriptions, feuilles de maladie, dashboard medecin.
+- `reimbursement-service` : remboursements et statistiques remboursements.
+- `api-gateway` : routage `/api/v1/**` vers les microservices.
+- `discovery-service` : Eureka.
+- `frontend` : React, TypeScript, Vite.
 
-| Service | Responsabilites |
-| --- | --- |
-| `discovery-service` | Registre Eureka pour decouverte des services. |
-| `api-gateway` | Point d'entree unique, routage, CORS mobile. |
-| `auth-service` | Utilisateurs, roles, login email/telephone/username, JWT, refresh token, BCrypt. |
-| `profile-service` | Assures, medecins, specialites, medecin traitant, statut assure. |
-| `medical-service` | Consultations, prescriptions medicamenteuses, prescriptions specialistes, feuilles de maladie. |
-| `reimbursement-service` | Calcul et execution des remboursements, simulation banque. |
+## Fonctionnalites
 
-## 4. Modeles de donnees par service
+- Login avec `identifier`, mot de passe, access token et refresh token.
+- Creation de compte avec synchronisation automatique du profil metier.
+- Gestion des assures, medecins generalistes, medecins specialistes et agents sociaux.
+- Gestion du medecin traitant avec historique des affectations.
+- Consultations idempotentes, prescriptions structurees, orientations vers des specialistes actifs et feuilles de maladie imprimables.
+- Cycle des feuilles : `ISSUED`, `SUBMITTED`, `UNDER_REVIEW`, puis validation ou rejet.
+- Remboursements calcules cote serveur avec statuts `PENDING`, `APPROVED`, `EXECUTED`, `REJECTED`.
+- Taux centralises : generaliste 100 %, specialiste 80 %.
+- Coordonnees bancaires chiffrees au repos et masquees dans les reponses API.
+- Journal d'audit des operations sensibles de profil et des actes medicaux.
+- Dashboard agent social avec statistiques patients, medecins, remboursements et activites recentes.
+- Dashboard medecin avec consultations, patients, feuilles maladie, prescriptions et actions rapides.
+- Module Parametres avec categories generales, medicales, assurance, securite et preferences UI.
 
-### auth-service
-- `user_accounts(id, username, email, phone_number, password_hash, enabled, created_at)`
-- `user_roles(user_id, role)`
-- `refresh_tokens(id, user_id, token, expires_at, revoked)`
+## Roles
 
-### profile-service
-- `doctors(id, first_name, last_name, matricule, type, specialty, phone_number, email)`
-- `insured_persons(id, insurance_number, first_name, last_name, birth_date, address, phone_number, email, status, treating_doctor_id)`
+Roles supportes :
+- `AGENT`
+- `SOCIAL_AGENT`
+- `AGENT_SOCIAL`
+- `SECURITY_AGENT`
+- `DOCTOR`
+- `GENERALIST`
+- `SPECIALIST`
+- `ADMIN`
 
-### medical-service
-- `consultations(id, insurance_number, doctor_matricule, doctor_type, started_at, ended_at, cost)`
-- `prescriptions(id, prescription_number, type, prescription_date, consultation_id, required_specialty, factors)`
-- `medications(id, name, posology, prescription_id)`
-- `disease_sheets(id, sheet_number, date, diagnosis, status, consultation_id)`
+Les alias agent sont conserves pour accepter plusieurs libelles cote inscription. Les roles `GENERALIST` et `SPECIALIST` impliquent le role applicatif `DOCTOR`.
 
-### reimbursement-service
-- `reimbursements(id, reimbursement_number, sheet_number, date, payment_type, bank_iban, base_amount, rate, reimbursed_amount, status)`
+## Creation de Compte et Synchronisation Metier
 
-## 5. Endpoints REST principaux
+Endpoint :
 
-### Auth
+```text
+POST /api/v1/auth/register
+```
+
+Le compte est cree dans `auth-service`, puis `auth-service` appelle `profile-service` via REST interne :
+
+```text
+POST /api/v1/internal/profiles/actors
+Header: X-Internal-Secret
+```
+
+Exemple agent social :
+
+```json
+{
+  "username": "agent.social",
+  "email": "agent.social@carehealth.local",
+  "phoneNumber": "+237690000002",
+  "password": "Password123!",
+  "roles": ["AGENT"],
+  "actorType": "SOCIAL_AGENT",
+  "firstName": "Paul",
+  "lastName": "Essomba"
+}
+```
+
+Exemple medecin generaliste :
+
+```json
+{
+  "username": "dr.kamga",
+  "email": "dr.kamga@carehealth.local",
+  "phoneNumber": "+237690000000",
+  "password": "Password123!",
+  "roles": ["DOCTOR"],
+  "actorType": "DOCTOR",
+  "doctorType": "GENERALISTE",
+  "firstName": "Jean",
+  "lastName": "Kamga"
+}
+```
+
+Exemple specialiste :
+
+```json
+{
+  "username": "dr.cardio",
+  "email": "cardio@carehealth.local",
+  "phoneNumber": "+237690000001",
+  "password": "Password123!",
+  "roles": ["DOCTOR"],
+  "actorType": "DOCTOR",
+  "doctorType": "SPECIALISTE",
+  "specialty": "CARDIOLOGIE",
+  "firstName": "Alice",
+  "lastName": "Mballa"
+}
+```
+
+Regles :
+- un agent/admin cree un profil `social_agents` lie par `auth_user_id` ;
+- un generaliste cree un profil `doctors` de type `GENERALIST` ;
+- un specialiste cree un profil `doctors` de type `SPECIALIST` avec specialite obligatoire ;
+- les profils crees sont visibles immediatement dans les listes et statistiques de `profile-service`.
+
+## Endpoints Principaux
+
+Auth :
 - `POST /api/v1/auth/login`
 - `POST /api/v1/auth/refresh`
 - `POST /api/v1/auth/register`
 
-### Profile
+Profile :
 - `POST /api/v1/insured`
 - `GET /api/v1/insured/{insuranceNumber}`
 - `GET /api/v1/insured/{insuranceNumber}/status`
 - `PUT /api/v1/insured/{insuranceNumber}/treating-doctor`
+- `PUT /api/v1/insured/{insuranceNumber}`
+- `PATCH /api/v1/insured/{insuranceNumber}/status`
+- `POST /api/v1/insured/{insuranceNumber}/primary-doctor`
+- `GET /api/v1/insured/{insuranceNumber}/primary-doctor-history`
 - `POST /api/v1/doctors`
 - `GET /api/v1/doctors/{matricule}`
-- `GET /api/v1/doctors?type=GENERALIST&page=0&size=20&sort=lastName,asc`
+- `GET /api/v1/doctors`
+- `GET /api/v1/agents`
 
-### Medical
+Dashboards :
+- `GET /api/v1/dashboard/agent-social/summary`
+- `GET /api/v1/dashboard/agent-social/patients-stats`
+- `GET /api/v1/dashboard/agent-social/doctors-stats`
+- `GET /api/v1/dashboard/agent-social/reimbursements-stats`
+- `GET /api/v1/dashboard/agent-social/recent-activities`
+- `GET /api/v1/dashboard/doctor/summary`
+- `GET /api/v1/dashboard/doctor/patients-stats`
+- `GET /api/v1/dashboard/doctor/consultations-stats`
+- `GET /api/v1/dashboard/doctor/disease-sheets-stats`
+- `GET /api/v1/dashboard/doctor/recommendations-stats`
+- `GET /api/v1/dashboard/doctor/recent-activities`
+
+Parametres :
+- `GET /api/v1/settings`
+- `GET /api/v1/settings/{category}`
+- `PUT /api/v1/settings/{category}`
+
+Medical :
 - `POST /api/v1/consultations`
 - `POST /api/v1/prescriptions/medications`
 - `POST /api/v1/prescriptions/specialist-consultations`
+- `POST /api/v1/consultations/{consultationId}/referrals`
+- `GET /api/v1/referrals/{referralNumber}`
+- `PATCH /api/v1/referrals/{referralNumber}/status`
 - `POST /api/v1/disease-sheets`
 - `GET /api/v1/disease-sheets/{sheetNumber}`
+- `PATCH /api/v1/disease-sheets/{sheetNumber}/submit`
+- `PATCH /api/v1/disease-sheets/{sheetNumber}/complete`
+- `GET /api/v1/disease-sheets/{sheetNumber}/pdf`
 
-### Reimbursement
+Remboursement :
 - `POST /api/v1/reimbursements`
 - `GET /api/v1/reimbursements/{reimbursementNumber}`
+- `POST /api/v1/reimbursements/{reimbursementNumber}/calculate`
+- `PATCH /api/v1/reimbursements/{reimbursementNumber}/approve`
+- `PATCH /api/v1/reimbursements/{reimbursementNumber}/reject`
+- `POST /api/v1/reimbursements/{reimbursementNumber}/execute`
 
-## 6. Securite
+## Tables Principales
 
-- JWT HMAC signe par `JWT_SECRET`.
-- Access token + refresh token.
-- BCrypt pour les mots de passe.
-- Roles : `AGENT`, `DOCTOR`, `GENERALIST`, `SPECIALIST`, `ADMIN`.
-- CORS ouvert par defaut pour faciliter le developpement mobile ; a restreindre en production.
-- Aucune donnee sensible en dur requise en production : utiliser les variables d'environnement.
+`auth-service` :
+- `user_accounts`
+- `user_roles`
+- `refresh_tokens`
 
-Comptes de test crees au demarrage par `auth-service` :
+`profile-service` :
+- `insured_persons`
+- `doctors`
+- `social_agents`
+- `application_settings`
+- `primary_doctor_assignments`
+- `audit_events`
+
+`medical-service` :
+- `consultations`
+- `prescriptions`
+- `medications`
+- `disease_sheets`
+- `specialist_referrals`
+- `specialist_referral_targets`
+- `audit_events`
+
+`reimbursement-service` :
+- `reimbursements`
+
+## Frontend
+
+Le frontend consomme `VITE_API_BASE_URL` et conserve la forme de reponse existante :
+
+```text
+response.data.data.accessToken
+response.data.data.refreshToken
+response.data.data.user
+```
+
+Routes principales :
+- `/login`
+- `/register`
+- `/app/dashboard`
+- `/app/insured`
+- `/app/doctors`
+- `/app/consultations`
+- `/app/prescriptions`
+- `/app/disease-sheets`
+- `/app/reimbursements`
+- `/app/settings`
+
+Le dashboard choisit automatiquement la vue agent social ou medecin selon les roles. Si un utilisateur possede des roles agent et medecin, un basculement de vue est affiche.
+
+Les preferences UI suivantes sont locales au navigateur :
+- theme clair ;
+- sombre bleute ;
+- sombre orange ;
+- sombre violet ;
+- sombre noir ;
+- densite confortable/compacte ;
+- animations normales/reduites.
+
+Les parametres metier sont stockes dans `profile-service`.
+
+## Variables d'Environnement
+
+Backend :
+- `JWT_SECRET`
+- `PROFILE_SERVICE_URL`
+- `INTERNAL_SERVICE_SECRET`
+- `SENSITIVE_DATA_KEY`
+- `SPRING_DATASOURCE_URL`
+- `SPRING_DATASOURCE_USERNAME`
+- `SPRING_DATASOURCE_PASSWORD`
+
+Frontend :
+- `VITE_API_BASE_URL=http://localhost:8080`
+- `VITE_APP_NAME=Care Health`
+- `VITE_APP_VERSION=1.0.0`
+
+Docker Compose configure `PROFILE_SERVICE_URL=http://profile-service:8082` pour `auth-service` et partage `INTERNAL_SERVICE_SECRET` entre `auth-service` et `profile-service`.
+
+## Comptes de Test
 
 | Utilisateur | Mot de passe | Roles |
 | --- | --- | --- |
@@ -165,35 +274,7 @@ Comptes de test crees au demarrage par `auth-service` :
 | `dr.generaliste` | `Password123!` | `DOCTOR`, `GENERALIST` |
 | `dr.specialiste` | `Password123!` | `DOCTOR`, `SPECIALIST` |
 
-## 7. Lancement
-
-### Option recommandee : lancer avec Docker sans Java local
-
-Les Dockerfiles compilent maintenant chaque microservice dans une image `maven:3.9.9-eclipse-temurin-17`. Tu n'as donc pas besoin d'avoir Java 17 installe sur ta machine pour lancer le backend avec Docker.
-
-```bash
-docker compose up --build
-```
-
-### Option developpeur : compiler localement
-
-Cette option exige un JDK 17 minimum. Verifie ta version avec `java -version` et `javac -version`. Si ton `javac` est inferieur a 17, utilise l'option Docker ci-dessus ou installe un JDK 17.
-
-```bash
-./mvnw clean package -DskipTests
-```
-
-Le wrapper telecharge Maven 3.9.9 dans `.mvn/` si Maven n'est pas installe globalement.
-
-Services :
-- Gateway : <http://localhost:8080>
-- Eureka : <http://localhost:8761>
-- Swagger auth : <http://localhost:8081/swagger-ui.html>
-- Swagger profile : <http://localhost:8082/swagger-ui.html>
-- Swagger medical : <http://localhost:8083/swagger-ui.html>
-- Swagger reimbursement : <http://localhost:8084/swagger-ui.html>
-
-### Exemple login
+Exemple login :
 
 ```bash
 curl -X POST http://localhost:8080/api/v1/auth/login \
@@ -201,46 +282,83 @@ curl -X POST http://localhost:8080/api/v1/auth/login \
   -d '{"identifier":"agent.csi","password":"Password123!"}'
 ```
 
-## 8. Donnees de test
+## Lancement
 
-`profile-service` insere :
-- generaliste `MED-GEN-001` ;
-- specialiste `MED-SPE-001` ;
-- assure actif `ASS-0001` avec medecin traitant `MED-GEN-001`.
+Backend local :
 
-## 9. Tests
+```bash
+./mvnw clean package -DskipTests
+```
+
+Docker :
+
+```bash
+docker compose build
+docker compose up -d
+```
+
+Frontend :
+
+```bash
+cd frontend
+npm install
+npm run build
+npm run dev
+```
+
+URLs :
+- Gateway : <http://localhost:8080>
+- Frontend : <http://localhost:5173>
+- Eureka : <http://localhost:8761>
+- Swagger auth : <http://localhost:8081/swagger-ui.html>
+- Swagger profile : <http://localhost:8082/swagger-ui.html>
+- Swagger medical : <http://localhost:8083/swagger-ui.html>
+- Swagger reimbursement : <http://localhost:8084/swagger-ui.html>
+
+## CRUD des documents medicaux
+
+Les consultations, ordonnances et feuilles de maladie sont stockees dans PostgreSQL et exposees par UUID avec pagination, recherche, filtres, tri et verrouillage optimiste. Les routes frontend sont :
+
+- `/app/consultations`, `/app/consultations/:id`, `/app/consultations/:id/edit`
+- `/app/prescriptions`, `/app/prescriptions/:id`, `/app/prescriptions/:id/edit`
+- `/app/disease-sheets`, `/app/disease-sheets/:id`, `/app/disease-sheets/:id/edit`
+
+Les listes conservent leurs criteres dans la query string. Le bouton de copie copie toujours l'identifiant complet, meme lorsqu'il est tronque visuellement.
+
+Exemples (remplacer `$TOKEN`, les UUID et les identifiants externes) :
+
+```bash
+curl -X POST http://localhost:8080/api/v1/consultations -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"insuranceNumber":"ASS-0001","startedAt":"2026-06-10T09:00:00","endedAt":"2026-06-10T09:30:00","cost":10000,"reason":"Controle"}'
+curl -H "Authorization: Bearer $TOKEN" http://localhost:8080/api/v1/consultations/CONSULTATION_UUID
+curl -X PUT http://localhost:8080/api/v1/consultations/CONSULTATION_UUID -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"diagnosis":"Diagnostic corrige","version":0}'
+curl -H "Authorization: Bearer $TOKEN" 'http://localhost:8080/api/v1/consultations?page=0&size=20&sort=startedAt&direction=desc&status=COMPLETED'
+
+curl -X POST http://localhost:8080/api/v1/prescriptions -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"consultationId":"CONSULTATION_UUID","medications":[{"name":"Paracetamol","posology":"1 comprime","frequency":"3 fois/jour"},{"name":"Vitamine C","posology":"1 comprime/jour"}]}'
+curl -H "Authorization: Bearer $TOKEN" http://localhost:8080/api/v1/prescriptions/PRESCRIPTION_UUID
+curl -X PUT http://localhost:8080/api/v1/prescriptions/PRESCRIPTION_UUID -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"notes":"Apres repas","version":0}'
+
+curl -X POST http://localhost:8080/api/v1/disease-sheets -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"consultationId":"CONSULTATION_UUID","prescriptionId":"PRESCRIPTION_UUID","diagnosis":"Diagnostic"}'
+curl -H "Authorization: Bearer $TOKEN" http://localhost:8080/api/v1/disease-sheets/DISEASE_SHEET_UUID
+curl -X PUT http://localhost:8080/api/v1/disease-sheets/DISEASE_SHEET_UUID -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"medicalConclusion":"Conclusion corrigee","version":0}'
+```
+
+## Tests
 
 ```bash
 ./mvnw test
+cd frontend && npm run build
 ```
 
-Tests inclus :
+Tests backend existants :
 - generation JWT ;
 - regles de profil medecin ;
 - validation periode consultation ;
-- calcul remboursement 100% / 80%.
+- calcul remboursement.
 
-## 10. Hypotheses et limites
+## Hypotheses et Limites
 
-- Le PDF decrit une application d'organisme de securite sociale mais ne fournit pas de maquettes mobiles detaillees ; les modules mobiles sont deduits des cas d'utilisation UML.
-- Le document ne mentionne pas de notifications ni pieces jointes ; aucun microservice notification/document n'a ete ajoute pour eviter une fonctionnalite artificielle.
-- La banque est simulee par un client applicatif (`BankPaymentClient`) qui journalise le virement sans integration externe reelle.
-- Les communications interservices REST propagent le token utilisateur courant afin de conserver les controles de role.
-
-### Erreur locale `release version 17 not supported`
-
-Cette erreur signifie que le JDK local est inferieur a Java 17. Spring Boot 3 exige Java 17 minimum. Solutions :
-
-1. lancer directement `docker compose up --build`, qui compile dans Docker avec Java 17 ;
-2. ou installer un JDK 17 et configurer `JAVA_HOME`.
-
-Sur Debian/Kali/Ubuntu :
-
-```bash
-sudo apt update
-sudo apt install openjdk-17-jdk
-sudo update-alternatives --config java
-sudo update-alternatives --config javac
-java -version
-javac -version
-```
+- La synchronisation metier utilise un appel REST interne simple, car aucun broker evenementiel n'existait dans le projet.
+- Les dashboards utilisent les donnees persistantes disponibles. Les indicateurs dont le modele ne porte pas encore les timestamps ou statuts fins retournent une valeur neutre documentee, par exemple le delai moyen de traitement.
+- Les comptes de test medecins historiques ne portent pas encore un lien `auth_user_id` vers les medecins seedes ; les nouveaux comptes crees via inscription sont lies automatiquement.
+- Le client banque reste simule.
+- Java 17 est requis pour Spring Boot 3.

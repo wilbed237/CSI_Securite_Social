@@ -16,18 +16,22 @@ spring:
           uri: lb://auth-service
           predicates:
             - Path=/api/v1/auth/**,/api/v1/users/**
+        - id: medical-service-lookups
+          uri: lb://medical-service
+          predicates:
+            - Path=/api/v1/patients/*/disease-sheets,/api/v1/doctors/*/disease-sheets
         - id: profile-service
           uri: lb://profile-service
           predicates:
-            - Path=/api/v1/insured/**,/api/v1/doctors/**
+            - Path=/api/v1/insured/**,/api/v1/doctors/**,/api/v1/agents/**,/api/v1/settings/**,/api/v1/audit-events/**,/api/v1/dashboard/agent-social/summary,/api/v1/dashboard/agent-social/patients-stats,/api/v1/dashboard/agent-social/doctors-stats,/api/v1/dashboard/agent-social/recent-activities
         - id: medical-service
           uri: lb://medical-service
           predicates:
-            - Path=/api/v1/consultations/**,/api/v1/prescriptions/**,/api/v1/disease-sheets/**
+            - Path=/api/v1/consultations/**,/api/v1/prescriptions/**,/api/v1/referrals/**,/api/v1/disease-sheets/**,/api/v1/dashboard/doctor/**,/api/v1/dashboard/agent-social/doctors-consulted
         - id: reimbursement-service
           uri: lb://reimbursement-service
           predicates:
-            - Path=/api/v1/reimbursements/**
+            - Path=/api/v1/reimbursements/**,/api/v1/reimbursements/*/receipt,/api/v1/dashboard/agent-social/reimbursements-stats
 eureka:
   client:
     service-url:

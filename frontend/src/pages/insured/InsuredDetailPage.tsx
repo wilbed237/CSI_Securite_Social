@@ -20,6 +20,7 @@ export function InsuredDetailPage() {
   usePageTitle(`Patient couvert ${insuranceNumber}`);
   const [doctorMatricule, setDoctorMatricule] = useState('MED-GEN-001');
   const query = useQuery({ queryKey: ['insured', insuranceNumber], queryFn: () => profileApi.getInsured(insuranceNumber) });
+  const history = useQuery({ queryKey: ['primary-doctor-history', insuranceNumber], queryFn: () => profileApi.primaryDoctorHistory(insuranceNumber) });
 
   const assign = async () => {
     try { await profileApi.assignTreatingDoctor(insuranceNumber, doctorMatricule); toast.success('Praticien référent associé'); query.refetch(); }
@@ -41,17 +42,21 @@ export function InsuredDetailPage() {
             <Info label="Adresse" value={insured.address} />
             <Info label="Téléphone" value={insured.phoneNumber ?? '-'} />
             <Info label="Email" value={insured.email ?? '-'} />
+            <Info label="Pays" value={insured.countryCode ?? 'CM'} />
+            <Info label="Mode remboursement" value={insured.preferredPaymentType ?? 'CASH'} />
+            <Info label="Compte bancaire" value={insured.bankAccountMasked ?? '-'} />
           </dl>
         </Card>
         <Card>
           <CardHeader title="Praticien référent" description="Le référentiel clinique impose un généraliste comme médecin de référence." />
           {insured.treatingDoctor ? <div className="rounded-xl bg-secondary-50 p-4"><p className="font-bold text-slate-950">Dr {insured.treatingDoctor.firstName} {insured.treatingDoctor.lastName}</p><p className="text-sm text-slate-500">{insured.treatingDoctor.matricule} · {insured.treatingDoctor.type}</p></div> : <p className="text-sm text-slate-500">Aucun praticien référent enregistré.</p>}
-          <RoleGate roles={['AGENT']}>
+          <RoleGate roles={['AGENT', 'AGENT_SOCIAL', 'SOCIAL_AGENT', 'SECURITY_AGENT', 'ADMIN']}>
             <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-end">
               <Input label="Matricule généraliste" value={doctorMatricule} onChange={(e) => setDoctorMatricule(e.target.value)} />
               <Button icon={<Stethoscope className="h-4 w-4" />} onClick={assign}>Associer</Button>
             </div>
           </RoleGate>
+          {history.data && history.data.length > 0 && <div className="mt-6 border-t border-slate-200 pt-4"><p className="text-sm font-semibold">Historique</p>{history.data.map((item) => <p key={item.id} className="mt-2 text-xs text-slate-500">Dr {item.doctor.firstName} {item.doctor.lastName} · depuis {new Date(item.startedAt).toLocaleDateString()}</p>)}</div>}
         </Card>
       </div>
     </div>

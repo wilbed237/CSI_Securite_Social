@@ -1,0 +1,28 @@
+import { lazy } from 'react';
+
+export const AppLayout = lazy(() => import('../layouts/AppLayout').then((module) => ({ default: module.AppLayout })));
+export const DashboardPage = lazy(() => import('../pages/DashboardPage').then((module) => ({ default: module.DashboardPage })));
+export const LoginPage = lazy(() => import('../pages/auth/LoginPage').then((module) => ({ default: module.LoginPage })));
+export const RegisterPage = lazy(() => import('../pages/auth/RegisterPage').then((module) => ({ default: module.RegisterPage })));
+export const InsuredListPage = lazy(() => import('../pages/insured/InsuredListPage').then((module) => ({ default: module.InsuredListPage })));
+export const InsuredCreatePage = lazy(() => import('../pages/insured/InsuredCreatePage').then((module) => ({ default: module.InsuredCreatePage })));
+export const InsuredDetailPage = lazy(() => import('../pages/insured/InsuredDetailPage').then((module) => ({ default: module.InsuredDetailPage })));
+export const DoctorListPage = lazy(() => import('../pages/doctors/DoctorListPage').then((module) => ({ default: module.DoctorListPage })));
+export const DoctorCreatePage = lazy(() => import('../pages/doctors/DoctorCreatePage').then((module) => ({ default: module.DoctorCreatePage })));
+export const ConsultationCreatePage = lazy(() => import('../pages/medical/ConsultationCreatePage').then((module) => ({ default: module.ConsultationCreatePage })));
+export const PrescriptionPage = lazy(() => import('../pages/medical/PrescriptionPage').then((module) => ({ default: module.PrescriptionPage })));
+export const DiseaseSheetPage = lazy(() => import('../pages/medical/DiseaseSheetPage').then((module) => ({ default: module.DiseaseSheetPage })));
+export const ConsultationListPage = lazy(() => import('../pages/medical/ConsultationListPage').then((module) => ({ default: module.ConsultationListPage })));
+export const ConsultationDetailPage = lazy(() => import('../pages/medical/ConsultationDetailPage').then((module) => ({ default: module.ConsultationDetailPage })));
+export const ConsultationEditPage = lazy(() => import('../pages/medical/ConsultationEditPage').then((module) => ({ default: module.ConsultationEditPage })));
+export const PrescriptionListPage = lazy(() => import('../pages/medical/PrescriptionListPage').then((module) => ({ default: module.PrescriptionListPage })));
+export const PrescriptionDetailPage = lazy(() => import('../pages/medical/PrescriptionDetailPage').then((module) => ({ default: module.PrescriptionDetailPage })));
+export const PrescriptionEditPage = lazy(() => import('../pages/medical/PrescriptionEditPage').then((module) => ({ default: module.PrescriptionEditPage })));
+export const DiseaseSheetListPage = lazy(() => import('../pages/medical/DiseaseSheetListPage').then((module) => ({ default: module.DiseaseSheetListPage })));
+export const DiseaseSheetDetailPage = lazy(() => import('../pages/medical/DiseaseSheetDetailPage').then((module) => ({ default: module.DiseaseSheetDetailPage })));
+export const DiseaseSheetEditPage = lazy(() => import('../pages/medical/DiseaseSheetEditPage').then((module) => ({ default: module.DiseaseSheetEditPage })));
+export const ReimbursementPage = lazy(() => import('../pages/reimbursement/ReimbursementPage').then((module) => ({ default: module.ReimbursementPage })));
+export const SettingsPage = lazy(() => import('../pages/settings/SettingsPage').then((module) => ({ default: module.SettingsPage })));
+export const ForbiddenPage = lazy(() => import('../pages/errors/ForbiddenPage').then((module) => ({ default: module.ForbiddenPage })));
+export const NotFoundPage = lazy(() => import('../pages/errors/NotFoundPage').then((module) => ({ default: module.NotFoundPage })));
+export const RouteErrorPage = lazy(() => import('../pages/errors/RouteErrorPage').then((module) => ({ default: module.RouteErrorPage })));
