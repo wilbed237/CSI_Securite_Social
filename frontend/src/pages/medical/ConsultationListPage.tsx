@@ -15,6 +15,7 @@ import { Select } from '../../components/ui/Select';
 import { DataTable } from '../../components/ui/Table';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useTranslation } from '../../i18n';
+import { useAuthStore } from '../../store/authStore';
 import type { ConsultationFilters, ConsultationStatus } from '../../types/api';
 
 export function ConsultationListPage() {
@@ -28,6 +29,7 @@ export function ConsultationListPage() {
     doctorId: params.get('doctorId') || undefined, status: (params.get('status') as ConsultationStatus) || undefined,
   };
   const query = useQuery({ queryKey: ['consultations', filters], queryFn: () => consultationApi.getConsultations(filters) });
+  const canCreateConsultation = useAuthStore((state) => state.hasAnyRole(['DOCTOR', 'GENERALIST', 'SPECIALIST']));
   const set = (key: string, value: string) => setParams((current) => { const next = new URLSearchParams(current); if (value) next.set(key, value); else next.delete(key); if (key !== 'page') next.set('page', '0'); return next; });
 
   return <div>
@@ -42,7 +44,7 @@ export function ConsultationListPage() {
           { label: t('medical.sort.amountDesc'), value: 'cost:desc' }, { label: t('medical.sort.status'), value: 'status:asc' },
         ]} />
       </div>
-      <div className="mt-4 flex gap-2"><Button variant="secondary" onClick={() => query.refetch()}>{t('common.refresh')}</Button><Link className="care-btn-primary rounded-xl px-4 py-2.5 text-sm font-semibold" to="/app/consultations/new">{t('common.create')}</Link></div>
+      <div className="mt-4 flex gap-2"><Button variant="secondary" onClick={() => query.refetch()}>{t('common.refresh')}</Button>{canCreateConsultation ? <Link className="care-btn-primary rounded-xl px-4 py-2.5 text-sm font-semibold" to="/app/consultations/new">{t('common.create')}</Link> : null}</div>
     </Card>
     {query.isLoading ? <div className="grid gap-3"><SkeletonCard /><SkeletonCard /></div> : query.isError ? <ErrorState message={extractApiError(query.error)} /> : <>
       <DataTable headers={[t('common.id'), t('diseaseSheet.patient'), t('diseaseSheet.doctor'), t('doctor.type'), t('common.date'), t('consultation.reason'), t('common.amount'), t('common.status'), t('common.actions')]} empty={t('consultation.empty')}>
