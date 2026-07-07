@@ -3,6 +3,7 @@ import { AuthLayout } from '../layouts/AuthLayout';
 import { ProtectedRoute } from './ProtectedRoute';
 import { LandingPage } from '../pages/LandingPage';
 import {
+  AccountPage,
   AppLayout,
   ConsultationCreatePage,
   ConsultationListPage,
@@ -25,7 +26,6 @@ import {
   PrescriptionListPage,
   PrescriptionDetailPage,
   PrescriptionEditPage,
-  RegisterPage,
   ReimbursementPage,
   RouteErrorPage,
   SettingsPage,
@@ -37,7 +37,6 @@ export const router = createBrowserRouter([
     element: <AuthLayout />,
     children: [
       { path: '/login', element: <LoginPage /> },
-      { path: '/register', element: <RegisterPage /> },
     ],
   },
   {
@@ -65,6 +64,7 @@ export const router = createBrowserRouter([
       { path: 'disease-sheets/:id', element: <DiseaseSheetDetailPage /> },
       { path: 'disease-sheets/:id/edit', element: <DiseaseSheetEditPage /> },
       { path: 'reimbursements', element: <ProtectedRoute roles={['AGENT', 'AGENT_SOCIAL', 'SOCIAL_AGENT', 'SECURITY_AGENT', 'ADMIN']}><ReimbursementPage /></ProtectedRoute> },
+      { path: 'account', element: <ProtectedRoute roles={['AGENT', 'ADMIN', 'SOCIAL_AGENT', 'AGENT_SOCIAL', 'SECURITY_AGENT', 'DOCTOR', 'GENERALIST', 'SPECIALIST']}><AccountPage /></ProtectedRoute> },
       { path: 'settings', element: <ProtectedRoute roles={['AGENT', 'ADMIN', 'SOCIAL_AGENT', 'AGENT_SOCIAL', 'SECURITY_AGENT']}><SettingsPage /></ProtectedRoute> },
       { path: '*', element: <Navigate to="/app" replace /> },
     ],

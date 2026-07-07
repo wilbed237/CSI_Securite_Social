@@ -23,8 +23,6 @@ public class DataSeeder {
     CommandLineRunner seedUsers(UserAccountRepository users) {
         return args -> {
             createIfMissing(users, "agent.csi", "agent@csi.local", "+221770000001", Set.of(RoleName.AGENT, RoleName.ADMIN));
-            createIfMissing(users, "dr.generaliste", "generaliste@csi.local", "+221770000002", Set.of(RoleName.DOCTOR, RoleName.GENERALIST));
-            createIfMissing(users, "dr.specialiste", "specialiste@csi.local", "+221770000003", Set.of(RoleName.DOCTOR, RoleName.SPECIALIST));
         };
     }
 

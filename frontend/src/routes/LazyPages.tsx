@@ -3,7 +3,6 @@ import { lazy } from 'react';
 export const AppLayout = lazy(() => import('../layouts/AppLayout').then((module) => ({ default: module.AppLayout })));
 export const DashboardPage = lazy(() => import('../pages/DashboardPage').then((module) => ({ default: module.DashboardPage })));
 export const LoginPage = lazy(() => import('../pages/auth/LoginPage').then((module) => ({ default: module.LoginPage })));
-export const RegisterPage = lazy(() => import('../pages/auth/RegisterPage').then((module) => ({ default: module.RegisterPage })));
 export const InsuredListPage = lazy(() => import('../pages/insured/InsuredListPage').then((module) => ({ default: module.InsuredListPage })));
 export const InsuredCreatePage = lazy(() => import('../pages/insured/InsuredCreatePage').then((module) => ({ default: module.InsuredCreatePage })));
 export const InsuredDetailPage = lazy(() => import('../pages/insured/InsuredDetailPage').then((module) => ({ default: module.InsuredDetailPage })));
@@ -23,6 +22,7 @@ export const DiseaseSheetDetailPage = lazy(() => import('../pages/medical/Diseas
 export const DiseaseSheetEditPage = lazy(() => import('../pages/medical/DiseaseSheetEditPage').then((module) => ({ default: module.DiseaseSheetEditPage })));
 export const ReimbursementPage = lazy(() => import('../pages/reimbursement/ReimbursementPage').then((module) => ({ default: module.ReimbursementPage })));
 export const SettingsPage = lazy(() => import('../pages/settings/SettingsPage').then((module) => ({ default: module.SettingsPage })));
+export const AccountPage = lazy(() => import('../pages/account/AccountPage').then((module) => ({ default: module.AccountPage })));
 export const ForbiddenPage = lazy(() => import('../pages/errors/ForbiddenPage').then((module) => ({ default: module.ForbiddenPage })));
 export const NotFoundPage = lazy(() => import('../pages/errors/NotFoundPage').then((module) => ({ default: module.NotFoundPage })));
 export const RouteErrorPage = lazy(() => import('../pages/errors/RouteErrorPage').then((module) => ({ default: module.RouteErrorPage })));
