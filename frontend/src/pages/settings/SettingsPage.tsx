@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
+import { authApi } from '../../api/authApi';
 import { dashboardApi } from '../../api/dashboardApi';
 import { settingsApi } from '../../api/settingsApi';
 import { extractApiError } from '../../api/httpClient';
@@ -138,6 +139,53 @@ function SettingsSection({
       </div>
       {children}
     </section>
+  );
+}
+
+function ChangePasswordCard() {
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const mutation = useMutation({
+    mutationFn: () => authApi.changePassword({ currentPassword, newPassword }),
+    onSuccess: () => {
+      toast.success('Mot de passe mis à jour');
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      setError(null);
+    },
+    onError: (err) => {
+      setError(extractApiError(err));
+      toast.error(extractApiError(err));
+    },
+  });
+
+  const submit = () => {
+    if (newPassword.length < 8) {
+      setError('Le nouveau mot de passe doit contenir au moins 8 caractères');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setError('La confirmation ne correspond pas');
+      return;
+    }
+    setError(null);
+    mutation.mutate();
+  };
+
+  return (
+    <Card>
+      <CardHeader title="Changer le mot de passe" />
+      <div className="space-y-3">
+        <Input label="Mot de passe actuel" type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required />
+        <Input label="Nouveau mot de passe" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required />
+        <Input label="Confirmer le nouveau mot de passe" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+        {error && <p className="text-sm font-medium text-danger-500">{error}</p>}
+        <Button onClick={submit} isLoading={mutation.isPending}>Enregistrer</Button>
+      </div>
+    </Card>
   );
 }
 
@@ -267,6 +315,9 @@ export function SettingsPage() {
 
       {/* Sécurité */}
       <SettingsSection icon={Shield} title={t('settings.security')}>
+        <div className="mb-4">
+          <ChangePasswordCard />
+        </div>
         {filteredGeneral.length > 0 ? (
           <div className="grid gap-3 md:grid-cols-2">
             {filteredGeneral.map((s) => <SettingItem key={s.id} setting={s} />)}

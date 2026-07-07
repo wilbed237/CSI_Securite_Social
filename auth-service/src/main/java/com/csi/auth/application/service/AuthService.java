@@ -74,11 +74,41 @@ public class AuthService {
      * Cree un compte applicatif avec mot de passe chiffre et roles explicites.
      */
     @Transactional
+    public void changePassword(String username, ChangePasswordRequest request) {
+        UserAccount user = users.findByUsernameIgnoreCase(username)
+                .orElseThrow(() -> new BusinessException("USER_NOT_FOUND", "Utilisateur introuvable"));
+        if (!passwordEncoder.matches(request.currentPassword(), user.getPasswordHash())) {
+            throw new BusinessException("BAD_CREDENTIALS", "Mot de passe actuel invalide");
+        }
+        user.setPasswordHash(passwordEncoder.encode(request.newPassword()));
+        users.save(user);
+        audit(user, "PASSWORD_CHANGED", "SUCCESS");
+    }
+
+    @Transactional
+    public void updateAccount(String username, UpdateAccountRequest request) {
+        UserAccount user = users.findByUsernameIgnoreCase(username)
+                .orElseThrow(() -> new BusinessException("USER_NOT_FOUND", "Utilisateur introuvable"));
+        if (users.existsByEmailIgnoreCaseAndIdNot(request.email(), user.getId())) {
+            throw new BusinessException("USER_ALREADY_EXISTS", "Un utilisateur existe deja avec cet email");
+        }
+        if (users.existsByUsernameIgnoreCaseAndIdNot(request.username(), user.getId())) {
+            throw new BusinessException("USER_ALREADY_EXISTS", "Un utilisateur existe deja avec ce nom d'utilisateur");
+        }
+        user.setUsername(request.username());
+        user.setEmail(request.email());
+        user.setPhoneNumber(request.phoneNumber());
+        users.save(user);
+        audit(user, "ACCOUNT_UPDATED", "SUCCESS");
+    }
+
+    @Transactional
     public UserResponse register(RegisterUserRequest request) {
         if (users.existsByEmailIgnoreCase(request.email()) || users.existsByUsernameIgnoreCase(request.username())) {
             throw new BusinessException("USER_ALREADY_EXISTS", "Un utilisateur existe deja avec cet email ou ce nom d'utilisateur");
         }
         Set<RoleName> roles = normalizeRoles(request.roles());
+        validateAgentProvisionedRegistration(roles, request);
         UserAccount user = UserAccount.builder()
                 .username(request.username())
                 .email(request.email())
@@ -102,6 +132,24 @@ public class AuthService {
             roles.add(RoleName.DOCTOR);
         }
         return roles;
+    }
+
+    private void validateAgentProvisionedRegistration(Set<RoleName> roles, RegisterUserRequest request) {
+        if (!(roles.contains(RoleName.DOCTOR) || roles.contains(RoleName.GENERALIST) || roles.contains(RoleName.SPECIALIST))) {
+            throw new BusinessException("ROLE_NOT_ALLOWED", "Seuls les comptes medecins peuvent etre crees via cette route");
+        }
+        if (roles.contains(RoleName.AGENT) || roles.contains(RoleName.SOCIAL_AGENT) || roles.contains(RoleName.AGENT_SOCIAL)
+                || roles.contains(RoleName.SECURITY_AGENT) || roles.contains(RoleName.ADMIN)) {
+            throw new BusinessException("ROLE_NOT_ALLOWED", "La creation de comptes agent/admin est interdite via cette route");
+        }
+        String actorType = normalize(request.actorType());
+        if (!actorType.isBlank() && !"DOCTOR".equals(actorType)) {
+            throw new BusinessException("ACTOR_TYPE_INVALID", "Le type d'acteur doit etre DOCTOR");
+        }
+        String doctorType = doctorType(request, roles);
+        if (doctorType == null || doctorType.isBlank()) {
+            throw new BusinessException("DOCTOR_TYPE_REQUIRED", "Le type de medecin (GENERALIST ou SPECIALIST) est obligatoire");
+        }
     }
 
     private void syncActorProfile(UserAccount user, RegisterUserRequest request, Set<RoleName> roles) {

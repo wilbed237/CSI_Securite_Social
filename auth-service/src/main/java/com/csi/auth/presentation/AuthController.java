@@ -8,6 +8,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -31,8 +33,25 @@ public class AuthController {
         return ApiResponse.success("Token renouvele", authService.refresh(request));
     }
 
+    @Operation(summary = "Changer le mot de passe de l'utilisateur connecté")
+    @PostMapping("/change-password")
+    @PreAuthorize("isAuthenticated()")
+    public ApiResponse<Void> changePassword(Authentication authentication, @Valid @RequestBody ChangePasswordRequest request) {
+        authService.changePassword(authentication.getName(), request);
+        return ApiResponse.success("Mot de passe mis a jour", null);
+    }
+
+    @Operation(summary = "Mettre a jour les informations de compte de l'utilisateur connecté")
+    @PutMapping("/account")
+    @PreAuthorize("isAuthenticated()")
+    public ApiResponse<Void> updateAccount(Authentication authentication, @Valid @RequestBody UpdateAccountRequest request) {
+        authService.updateAccount(authentication.getName(), request);
+        return ApiResponse.success("Compte mis a jour", null);
+    }
+
     @Operation(summary = "Creer un utilisateur applicatif")
     @PostMapping("/register")
+    @PreAuthorize("hasAnyRole('AGENT','AGENT_SOCIAL','SOCIAL_AGENT','SECURITY_AGENT','ADMIN')")
     public ResponseEntity<ApiResponse<UserResponse>> register(@Valid @RequestBody RegisterUserRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("Utilisateur cree", authService.register(request)));
     }

@@ -18,6 +18,14 @@ public final class AuthDtos {
 
     public record LoginRequest(@NotBlank String identifier, @NotBlank String password) {}
     public record RefreshRequest(@NotBlank String refreshToken) {}
+    public record ChangePasswordRequest(
+            @NotBlank String currentPassword,
+            @NotBlank @Size(min = 8, max = 100) String newPassword) {}
+
+    public record UpdateAccountRequest(
+            @NotBlank @Size(max = 80) String username,
+            @NotBlank @Email @Size(max = 160) String email,
+            @Size(max = 40) String phoneNumber) {}
 
     public record RegisterUserRequest(
             @NotBlank @Size(max = 80) String username,

@@ -29,7 +29,6 @@ export function LandingPage() {
             <p className="mt-6 max-w-2xl text-lg leading-8 text-blue-50">Pilotez les dossiers patients, les praticiens, les ordonnances, les feuilles de soins et les prises en charge depuis une expérience médicale claire, sécurisée et responsive.</p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link to="/login"><Button icon={<ArrowRight className="h-4 w-4" />}>Se connecter</Button></Link>
-              <Link to="/register"><Button variant="secondary">Créer un compte</Button></Link>
             </div>
           </div>
           <div className="rounded-3xl bg-white/10 p-4 ring-1 ring-white/20 sm:p-6">
