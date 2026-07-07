@@ -25,7 +25,7 @@ export function InsuredCreatePage() {
     try {
       const insured = await profileApi.createInsured({ ...values, email: values.email || undefined });
       toast.success('Patient couvert inscrit');
-      navigate(`/app/insured/${insured.insuranceNumber}`);
+      navigate(`/app/insured/${insured.insuranceNumber}`, { state: { showTreatingDoctorHint: true } });
     } catch (error) { toast.error(extractApiError(error)); }
   };
   return (

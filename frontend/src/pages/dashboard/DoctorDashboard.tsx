@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { ClipboardPlus, FileText, Pill, Search, Stethoscope, UserCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAuthStore } from '../../store/authStore';
 import { dashboardApi } from '../../api/dashboardApi';
 import { extractApiError } from '../../api/httpClient';
 import { ChartCard } from '../../components/dashboard/ChartCard';
@@ -12,6 +13,9 @@ import { Loader } from '../../components/ui/Loader';
 
 export function DoctorDashboard() {
   const summary = useQuery({ queryKey: ['dashboard', 'doctor-summary'], queryFn: () => dashboardApi.getDoctorSummary() });
+  const canCreateConsultation = useAuthStore((state) => state.hasAnyRole(['DOCTOR', 'GENERALIST', 'SPECIALIST']));
+  const canCreateDiseaseSheet = useAuthStore((state) => state.hasAnyRole(['DOCTOR', 'GENERALIST', 'SPECIALIST']));
+  const canCreatePrescription = useAuthStore((state) => state.hasAnyRole(['DOCTOR', 'GENERALIST', 'SPECIALIST']));
 
   if (summary.isLoading) return <Loader />;
   if (summary.isError) return <ErrorState message={extractApiError(summary.error)} />;
@@ -29,9 +33,9 @@ export function DoctorDashboard() {
       <Card>
         <CardHeader title="Actions rapides" />
         <div className="flex flex-wrap gap-3">
-          <Link to="/app/consultations/new"><Button icon={<ClipboardPlus className="h-4 w-4" />}>Créer une consultation</Button></Link>
-          <Link to="/app/disease-sheets"><Button variant="secondary" icon={<FileText className="h-4 w-4" />}>Créer une feuille maladie</Button></Link>
-          <Link to="/app/ordonnances"><Button variant="secondary" icon={<Pill className="h-4 w-4" />}>Rédiger une prescription</Button></Link>
+          {canCreateConsultation ? <Link to="/app/consultations/new"><Button icon={<ClipboardPlus className="h-4 w-4" />}>Créer une consultation</Button></Link> : null}
+          {canCreateDiseaseSheet ? <Link to="/app/disease-sheets"><Button variant="secondary" icon={<FileText className="h-4 w-4" />}>Créer une feuille maladie</Button></Link> : null}
+          {canCreatePrescription ? <Link to="/app/ordonnances"><Button variant="secondary" icon={<Pill className="h-4 w-4" />}>Rédiger une prescription</Button></Link> : null}
           <Link to="/app/insured"><Button variant="ghost" icon={<Search className="h-4 w-4" />}>Rechercher un patient</Button></Link>
         </div>
       </Card>

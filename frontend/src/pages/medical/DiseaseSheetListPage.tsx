@@ -15,6 +15,7 @@ import { Select } from '../../components/ui/Select';
 import { DataTable } from '../../components/ui/Table';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useTranslation } from '../../i18n';
+import { useAuthStore } from '../../store/authStore';
 import type { DiseaseSheetFilters, DiseaseSheetStatus } from '../../types/api';
 
 export function DiseaseSheetListPage() {
@@ -28,6 +29,7 @@ export function DiseaseSheetListPage() {
     hasReimbursement: params.get('hasReimbursement') ? params.get('hasReimbursement') === 'true' : undefined,
   };
   const query = useQuery({ queryKey: ['disease-sheets', filters], queryFn: () => diseaseSheetApi.getDiseaseSheets(filters) });
+  const canCreateDiseaseSheet = useAuthStore((state) => state.hasAnyRole(['DOCTOR', 'GENERALIST', 'SPECIALIST']));
   const set = (key: string, value: string) => setParams((current) => {
     const next = new URLSearchParams(current);
     if (value) next.set(key, value); else next.delete(key);
@@ -44,7 +46,7 @@ export function DiseaseSheetListPage() {
         <Select label={t('diseaseSheet.reimbursement')} value={filters.hasReimbursement === undefined ? '' : String(filters.hasReimbursement)} onChange={(e) => set('hasReimbursement', e.target.value)} options={[{ label: t('common.all'), value: '' }, { label: t('common.yes'), value: 'true' }, { label: t('common.no'), value: 'false' }]} />
         <Select label={t('common.sort')} value={`${filters.sort}:${filters.direction}`} onChange={(e) => { const [sort, direction] = e.target.value.split(':'); setParams((current) => { const next = new URLSearchParams(current); next.set('sort', sort); next.set('direction', direction); return next; }); }} options={[{ label: t('medical.sort.dateDesc'), value: 'consultationDate:desc' }, { label: t('medical.sort.dateAsc'), value: 'consultationDate:asc' }, { label: t('medical.sort.amountDesc'), value: 'consultationAmount:desc' }, { label: t('medical.sort.status'), value: 'status:asc' }]} />
       </div>
-      <div className="mt-4 flex gap-2"><Button variant="secondary" onClick={() => query.refetch()}>{t('common.refresh')}</Button><Link className="care-btn-primary rounded-xl px-4 py-2.5 text-sm font-semibold" to="/app/disease-sheets/new">{t('common.create')}</Link></div>
+      <div className="mt-4 flex gap-2"><Button variant="secondary" onClick={() => query.refetch()}>{t('common.refresh')}</Button>{canCreateDiseaseSheet ? <Link className="care-btn-primary rounded-xl px-4 py-2.5 text-sm font-semibold" to="/app/disease-sheets/new">{t('common.create')}</Link> : null}</div>
     </Card>
     {query.isLoading ? <div className="grid gap-3"><SkeletonCard /><SkeletonCard /></div> : query.isError ? <ErrorState message={extractApiError(query.error)} /> : <>
       <DataTable headers={[t('common.id'), t('diseaseSheet.patient'), t('diseaseSheet.doctor'), t('doctor.type'), t('consultation.id'), t('common.date'), t('common.amount'), t('common.status'), t('diseaseSheet.reimbursement'), t('common.actions')]} empty={t('diseaseSheet.empty')}>
